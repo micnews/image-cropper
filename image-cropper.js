@@ -23,6 +23,13 @@ var dom = require('dom-events')
       })
     }
 
+ImageCropper.prototype.zoomIn = function () {
+
+}
+
+ImageCropper.prototype.zoomOut = function () {
+
+}
 
 ImageCropper.prototype._wrap = function () {
   var container = this._containerElm = document.createElement('div')

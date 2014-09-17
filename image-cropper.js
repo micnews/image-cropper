@@ -47,31 +47,30 @@ ImageCropper.prototype._wrap = function () {
   container.appendChild(this._imageElm)
 }
 
+// move the image, making sure that it keeps it place in the container
+ImageCropper.prototype._moveImage = function (left, top) {
+  var minTopPosition = - (this._imageElm.height - this._options.height)
+    , minLeftPosition = - (this._imageElm.width - this._options.width)
+
+    , leftPosition = parseInt(this._imageElm.style.left.slice(0, -2), 10) + left
+    , topPosition = parseInt(this._imageElm.style.top.slice(0, -2), 10) + top
+
+  leftPosition = Math.min(leftPosition, 0)
+  leftPosition = Math.max(leftPosition, minLeftPosition)
+
+  topPosition = Math.min(topPosition, 0)
+  topPosition = Math.max(topPosition, minTopPosition)
+
+  this._imageElm.style.left = leftPosition + 'px'
+  this._imageElm.style.top = topPosition + 'px'
+}
+
 ImageCropper.prototype._makeDraggable = function () {
-  var image = this._imageElm
-    , options = this._options
+  var self = this
 
   dom.on(image, 'mousedown', function () {
     var onmousemove = function (event) {
-          // calculate minTopPosition & minLeftPosition here since we're
-          // going to add zooming later
-          // so we don't now the width & height of the image earlier
-          // for similar reason, use the left & top from the image instead of
-          // saving it somewhere
-          var minTopPosition = - (image.height - options.height)
-            , minLeftPosition = - (image.width - options.width)
-
-            , leftPosition = parseInt(image.style.left.slice(0, -2), 10) + event.movementX
-            , topPosition = parseInt(image.style.top.slice(0, -2), 10) + event.movementY
-
-          leftPosition = Math.min(leftPosition, 0)
-          leftPosition = Math.max(leftPosition, minLeftPosition)
-
-          topPosition = Math.min(topPosition, 0)
-          topPosition = Math.max(topPosition, minTopPosition)
-
-          image.style.left = leftPosition + 'px'
-          image.style.top = topPosition + 'px'
+          self._moveImage(event.movementX, event.movementY)
 
           // preventDefault is to make the image movable,
           // it's drag'n'droppable as the default action

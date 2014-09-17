@@ -15,6 +15,14 @@ dom.on(window, 'load', function() {
       cropper.zoomOut()
     })
 
+    dom.on(document.querySelector('#image1 .enable'), 'click', function () {
+      cropper.enable()
+    })
+
+    dom.on(document.querySelector('#image1 .disable'), 'click', function () {
+      cropper.disable()
+    })
+
   })
 
   var image2 = document.querySelector('#image2 .image')
@@ -27,6 +35,14 @@ dom.on(window, 'load', function() {
 
     dom.on(document.querySelector('#image2 .zoom-out'), 'click', function () {
       cropper.zoomOut()
+    })
+
+    dom.on(document.querySelector('#image2 .enable'), 'click', function () {
+      cropper.enable()
+    })
+
+    dom.on(document.querySelector('#image2 .disable'), 'click', function () {
+      cropper.disable()
     })
 
   })

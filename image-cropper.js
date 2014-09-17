@@ -5,6 +5,7 @@ var dom = require('dom-events')
       this._containerElm = null;
       this._imageElm = image;
       this._options = options;
+      this._enabled = false;
     }
 
   , init = function (image, options, callback) {
@@ -50,13 +51,29 @@ ImageCropper.prototype._resizeImage = function (widthChange) {
   this._moveImage(- widthChange / 2, - heightChange / 2)
 }
 
+ImageCropper.prototype.enable = function () {
+  this._enabled = true;
+  this._imageElm.style.cursor = 'move';
+}
+
+ImageCropper.prototype.disable = function () {
+  this._enabled = false;
+  this._imageElm.style.cursor = '';
+}
+
 ImageCropper.prototype.zoomIn = function () {
+  if (!this._enabled)
+    return
+
   var widthChange = Math.round(this._imageElm.width * 0.1)
 
   this._resizeImage(widthChange)
 }
 
 ImageCropper.prototype.zoomOut = function () {
+  if (!this._enabled)
+    return
+
   var widthChange = - Math.round(this._imageElm.width - this._imageElm.width / 1.1)
 
   this._resizeImage(widthChange)
@@ -121,6 +138,9 @@ ImageCropper.prototype._makeDraggable = function () {
   var self = this
 
   dom.on(this._imageElm, 'mousedown', function () {
+    if (!self._enabled)
+      return
+
     var onmousemove = function (event) {
           self._moveImage(event.movementX, event.movementY)
 

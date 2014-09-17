@@ -2,6 +2,7 @@ var dom = require('dom-events')
   , imageLoaded = require('image-loaded')
 
   , moveImage = require('./lib/move-image')
+  , resetZoom = require('./lib/reset-zoom')
   , resizeImage = require('./lib/resize-image')
 
   , ImageCropper = function (containerElm, image, options) {
@@ -25,7 +26,7 @@ var dom = require('dom-events')
         if (err)
           return callback(err)
 
-        imageCropper.resetZoom()
+        resetZoom(image, options.width, options.height)
 
         callback(null, imageCropper)
       })
@@ -61,25 +62,6 @@ ImageCropper.prototype.zoomOut = function () {
   var widthChange = - Math.round(this._imageElm.width - this._imageElm.width / 1.1)
 
   this._resizeImage(widthChange)
-}
-
-ImageCropper.prototype.resetZoom = function () {
-  var image = this._imageElm
-    , widthRatio = image.naturalWidth / this._width
-    , heightRation = image.naturalHeight / this._height
-    , ratio = Math.min(widthRatio, heightRation)
-      // need to set these now, since changing height might affect width
-    , newWidth = image.width / ratio
-    , newHeight = image.height / ratio
-
-  image.height = newHeight
-  image.width = newWidth
-
-  // as default start in the middle of the image
-  image.style.top = - ((image.height - this._height) / 2) + 'px'
-
-  // as default start in the middle of the image
-  image.style.left = - ((image.width - this._width) / 2) + 'px'
 }
 
 ImageCropper.prototype._wrap = function () {

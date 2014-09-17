@@ -42,26 +42,22 @@ ImageCropper.prototype.disable = function () {
   this._imageElm.style.cursor = '';
 }
 
-ImageCropper.prototype._resizeImage = function (widthChange) {
-  resizeImage(this._imageElm, widthChange, this._width, this._height)
+ImageCropper.prototype._resizeImage = function (changeFactor) {
+  resizeImage(this._imageElm, changeFactor, this._width, this._height)
 }
 
 ImageCropper.prototype.zoomIn = function () {
   if (!this._enabled)
     return
 
-  var widthChange = Math.round(this._imageElm.width * 0.1)
-
-  this._resizeImage(widthChange)
+  this._resizeImage(1.1)
 }
 
 ImageCropper.prototype.zoomOut = function () {
   if (!this._enabled)
     return
 
-  var widthChange = - Math.round(this._imageElm.width - this._imageElm.width / 1.1)
-
-  this._resizeImage(widthChange)
+  this._resizeImage(1/1.1)
 }
 
 ImageCropper.prototype._wrap = function () {

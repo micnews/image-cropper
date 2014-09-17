@@ -23,12 +23,43 @@ var dom = require('dom-events')
       })
     }
 
-ImageCropper.prototype.zoomIn = function () {
+ImageCropper.prototype._heightFromWidth = function (width) {
+  return this._imageElm.height / this._imageElm.width * width
+}
 
+ImageCropper.prototype._widthFromHeight = function (height) {
+  return this._imageElm.width / this._imageElm.height * height
+}
+
+ImageCropper.prototype._resizeImage = function (widthChange) {
+  var image = this._imageElm
+    , heightChange = this._heightFromWidth(widthChange)
+
+  if (image.width + widthChange < this._options.width) {
+    widthChange = this._options.width - image.width
+    heightChange = this._heightFromWidth(widthChange)
+  }
+  if (image.height + heightChange < this._options.height) {
+    heightChange = this._options.height - image.height
+    widthChange = this._widthFromHeight(heightChange)
+  }
+
+  image.width = image.width + widthChange
+  image.height = image.height + heightChange
+
+  this._moveImage(- widthChange / 2, - heightChange / 2)
+}
+
+ImageCropper.prototype.zoomIn = function () {
+  var widthChange = Math.round(this._imageElm.width * 0.1)
+
+  this._resizeImage(widthChange)
 }
 
 ImageCropper.prototype.zoomOut = function () {
+  var widthChange = - Math.round(this._imageElm.width - this._imageElm.width / 1.1)
 
+  this._resizeImage(widthChange)
 }
 
 ImageCropper.prototype._initialZoom = function () {
@@ -89,7 +120,7 @@ ImageCropper.prototype._moveImage = function (left, top) {
 ImageCropper.prototype._makeDraggable = function () {
   var self = this
 
-  dom.on(image, 'mousedown', function () {
+  dom.on(this._imageElm, 'mousedown', function () {
     var onmousemove = function (event) {
           self._moveImage(event.movementX, event.movementY)
 

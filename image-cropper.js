@@ -2,6 +2,7 @@ var dom = require('dom-events')
   , imageLoaded = require('image-loaded')
 
   , moveImage = require('./lib/move-image')
+  , resizeImage = require('./lib/resize-image')
 
   , ImageCropper = function (containerElm, image, options) {
       this._containerElm = containerElm;
@@ -30,33 +31,6 @@ var dom = require('dom-events')
       })
     }
 
-ImageCropper.prototype._heightFromWidth = function (width) {
-  return this._imageElm.height / this._imageElm.width * width
-}
-
-ImageCropper.prototype._widthFromHeight = function (height) {
-  return this._imageElm.width / this._imageElm.height * height
-}
-
-ImageCropper.prototype._resizeImage = function (widthChange) {
-  var image = this._imageElm
-    , heightChange = this._heightFromWidth(widthChange)
-
-  if (image.width + widthChange < this._width) {
-    widthChange = this._width - image.width
-    heightChange = this._heightFromWidth(widthChange)
-  }
-  if (image.height + heightChange < this._height) {
-    heightChange = this._height - image.height
-    widthChange = this._widthFromHeight(heightChange)
-  }
-
-  image.width = image.width + widthChange
-  image.height = image.height + heightChange
-
-  this._moveImage(- widthChange / 2, - heightChange / 2)
-}
-
 ImageCropper.prototype.enable = function () {
   this._enabled = true;
   this._imageElm.style.cursor = 'move';
@@ -65,6 +39,10 @@ ImageCropper.prototype.enable = function () {
 ImageCropper.prototype.disable = function () {
   this._enabled = false;
   this._imageElm.style.cursor = '';
+}
+
+ImageCropper.prototype._resizeImage = function (widthChange) {
+  resizeImage(this._imageElm, widthChange, this._width, this._height)
 }
 
 ImageCropper.prototype.zoomIn = function () {
@@ -118,7 +96,7 @@ ImageCropper.prototype._wrap = function () {
 }
 
 ImageCropper.prototype._moveImage = function (leftChange, topChange) {
-  moveImage(this._imageElm, leftChange, topChange, this._height, this._width)
+  moveImage(this._imageElm, leftChange, topChange, this._width, this._height)
 }
 
 ImageCropper.prototype._makeDraggable = function () {

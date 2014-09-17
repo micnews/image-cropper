@@ -5,10 +5,6 @@ var dom = require('dom-events')
       this._containerElm = null;
       this._imageElm = image;
       this._options = options;
-
-      this._wrap()
-      this._makeDraggable()
-
     }
 
   , init = function (image, options, callback) {
@@ -17,6 +13,10 @@ var dom = require('dom-events')
       imageLoaded(image, function (err) {
         if (err)
           return callback(err)
+
+        imageCropper._initialZoom()
+        imageCropper._wrap()
+        imageCropper._makeDraggable()
 
         callback(null, imageCropper)
 
@@ -29,6 +29,20 @@ ImageCropper.prototype.zoomIn = function () {
 
 ImageCropper.prototype.zoomOut = function () {
 
+}
+
+ImageCropper.prototype._initialZoom = function () {
+  // TODO: Handle if image is smaller than container
+  var image = this._imageElm
+    , widthRatio = image.naturalWidth / this._options.width
+    , heightRation = image.naturalHeight / this._options.height
+    , ratio = Math.min(widthRatio, heightRation)
+      // need to set these now, since changing height might affect width
+    , newWidth = image.width / ratio
+    , newHeight = image.height / ratio
+
+  image.height = newHeight
+  image.width = newWidth
 }
 
 ImageCropper.prototype._wrap = function () {

@@ -52,7 +52,7 @@ ImageCropper.prototype._makeDraggable = function () {
     , options = this._options
 
   dom.on(image, 'mousedown', function () {
-    var onmousemove = function () {
+    var onmousemove = function (event) {
           // calculate minTopPosition & minLeftPosition here since we're
           // going to add zooming later
           // so we don't now the width & height of the image earlier

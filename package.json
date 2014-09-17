@@ -1,0 +1,18 @@
+{
+  "name": "image-cropper",
+  "version": "0.0.0",
+  "description": "Vanilla js-widget for the browser dealing with cropping images",
+  "main": "image-cropper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Björklund <david.bjorklund@gmail.com> (http://davidbjorklund.com/)",
+  "license": "MIT",
+  "devDependencies": {
+    "serve-browserify": "^1.1.0"
+  },
+  "dependencies": {
+    "dom-events": "^0.1.1",
+    "image-loaded": "0.0.2"
+  }
+}

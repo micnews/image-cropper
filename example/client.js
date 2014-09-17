@@ -3,9 +3,9 @@ var dom = require('dom-events')
   , imageCropper = require('../image-cropper.js')
 
 dom.on(window, 'load', function() {
-  var image1 = document.querySelector('#image1 .image')
+  var containerElm1 = document.querySelector('#image1 .image-cropper-container')
 
-  imageCropper(image1, { width: 100, height: 80 }, function (err, cropper) {
+  imageCropper(containerElm1, { width: 100, height: 80, src: 'image.jpg' }, function (err, cropper) {
 
     dom.on(document.querySelector('#image1 .zoom-in'), 'click', function () {
       cropper.zoomIn()
@@ -25,9 +25,9 @@ dom.on(window, 'load', function() {
 
   })
 
-  var image2 = document.querySelector('#image2 .image')
+  var containerElm2 = document.querySelector('#image2 .image-cropper-container')
 
-  imageCropper(image2, { width: 80, height: 100 }, function (err, cropper) {
+  imageCropper(containerElm2, { width: 80, height: 100, src: 'image.jpg' }, function (err, cropper) {
 
     dom.on(document.querySelector('#image2 .zoom-in'), 'click', function () {
       cropper.zoomIn()

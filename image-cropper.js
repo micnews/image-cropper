@@ -1,10 +1,13 @@
 var dom = require('dom-events')
   , imageLoaded = require('image-loaded')
 
+  , moveImage = require('./lib/move-image')
+
   , ImageCropper = function (containerElm, image, options) {
       this._containerElm = containerElm;
       this._imageElm = image;
-      this._options = options;
+      this._width = options.width;
+      this._height = options.height;
       this._enabled = false;
 
       this._wrap()
@@ -39,12 +42,12 @@ ImageCropper.prototype._resizeImage = function (widthChange) {
   var image = this._imageElm
     , heightChange = this._heightFromWidth(widthChange)
 
-  if (image.width + widthChange < this._options.width) {
-    widthChange = this._options.width - image.width
+  if (image.width + widthChange < this._width) {
+    widthChange = this._width - image.width
     heightChange = this._heightFromWidth(widthChange)
   }
-  if (image.height + heightChange < this._options.height) {
-    heightChange = this._options.height - image.height
+  if (image.height + heightChange < this._height) {
+    heightChange = this._height - image.height
     widthChange = this._widthFromHeight(heightChange)
   }
 
@@ -84,8 +87,8 @@ ImageCropper.prototype.zoomOut = function () {
 
 ImageCropper.prototype.resetZoom = function () {
   var image = this._imageElm
-    , widthRatio = image.naturalWidth / this._options.width
-    , heightRation = image.naturalHeight / this._options.height
+    , widthRatio = image.naturalWidth / this._width
+    , heightRation = image.naturalHeight / this._height
     , ratio = Math.min(widthRatio, heightRation)
       // need to set these now, since changing height might affect width
     , newWidth = image.width / ratio
@@ -95,17 +98,17 @@ ImageCropper.prototype.resetZoom = function () {
   image.width = newWidth
 
   // as default start in the middle of the image
-  image.style.top = - ((image.height - this._options.height) / 2) + 'px'
+  image.style.top = - ((image.height - this._height) / 2) + 'px'
 
   // as default start in the middle of the image
-  image.style.left = - ((image.width - this._options.width) / 2) + 'px'
+  image.style.left = - ((image.width - this._width) / 2) + 'px'
 }
 
 ImageCropper.prototype._wrap = function () {
   var container = this._containerElm
 
-  container.style.width = this._options.width
-  container.style.height = this._options.height
+  container.style.width = this._width
+  container.style.height = this._height
   container.style.position = 'relative'
   container.style.overflow = 'hidden'
 
@@ -114,24 +117,8 @@ ImageCropper.prototype._wrap = function () {
   container.appendChild(this._imageElm)
 }
 
-/*
- * Relativly move the image, making sure that it keeps it place in the container
- */
-ImageCropper.prototype._moveImage = function (left, top) {
-  var minTopPosition = - (this._imageElm.height - this._options.height)
-    , minLeftPosition = - (this._imageElm.width - this._options.width)
-
-    , leftPosition = parseInt(this._imageElm.style.left.slice(0, -2), 10) + left
-    , topPosition = parseInt(this._imageElm.style.top.slice(0, -2), 10) + top
-
-  leftPosition = Math.min(leftPosition, 0)
-  leftPosition = Math.max(leftPosition, minLeftPosition)
-
-  topPosition = Math.min(topPosition, 0)
-  topPosition = Math.max(topPosition, minTopPosition)
-
-  this._imageElm.style.left = leftPosition + 'px'
-  this._imageElm.style.top = topPosition + 'px'
+ImageCropper.prototype._moveImage = function (leftChange, topChange) {
+  moveImage(this._imageElm, leftChange, topChange, this._height, this._width)
 }
 
 ImageCropper.prototype._makeDraggable = function () {

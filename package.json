@@ -9,7 +9,9 @@
   "author": "David Björklund <david.bjorklund@gmail.com> (http://davidbjorklund.com/)",
   "license": "MIT",
   "devDependencies": {
-    "serve-browserify": "^1.1.0"
+    "serve-browserify": "^1.1.0",
+    "tape": "^3.0.0",
+    "zuul": "^1.11.0"
   },
   "dependencies": {
     "dom-events": "^0.1.1",

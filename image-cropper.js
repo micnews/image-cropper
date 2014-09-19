@@ -1,11 +1,13 @@
 var dom = require('dom-events')
   , imageLoaded = require('image-loaded')
 
+  , draggable = require('./lib/draggable')
   , moveImage = require('./lib/move-image')
   , resetZoom = require('./lib/reset-zoom')
   , resizeImage = require('./lib/resize-image')
 
   , ImageCropper = function (options) {
+      var self = this
       this._containerElm = options.containerElm
       this._croppedImage = options.croppedImage
       this._overlayImage = options.overlayImage
@@ -14,7 +16,19 @@ var dom = require('dom-events')
       this._enabled = false
 
       this._wrap()
-      this._makeDraggable()
+
+      draggable(options.overlayImage, function (event) {
+        ;[ options.overlayImage, options.croppedImage ].forEach(function (image) {
+          if (self._enabled)
+            moveImage(
+                image
+              , event.movementX
+              , event.movementY
+              , options.width
+              , options.height
+            )
+        })
+      })
     }
 
   , init = function (containerElm, options, callback) {
@@ -104,39 +118,6 @@ ImageCropper.prototype._wrap = function () {
 
   container.appendChild(this._overlayImage)
   container.appendChild(cropContainer)
-}
-
-ImageCropper.prototype._moveImage = function (leftChange, topChange) {
-  moveImage(this._overlayImage, leftChange, topChange, this._width, this._height)
-  moveImage(this._croppedImage, leftChange, topChange, this._width, this._height)
-}
-
-ImageCropper.prototype._makeDraggable = function () {
-  var self = this
-
-  // subscribe for mousedown on the image element
-  // todo: make some nicer abstraction of this
-  dom.on(this._overlayImage, 'mousedown', function () {
-    if (!self._enabled)
-      return
-
-    var onmousemove = function (event) {
-          self._moveImage(event.movementX, event.movementY)
-
-          // preventDefault is to make the image movable,
-          // it's drag'n'droppable as the default action
-          event.preventDefault()
-        }
-
-    // but subscribe to mousvemove & mouseup on the document, since the mouse
-    // might move out of the image when moving it and we want it to continue to
-    // work then
-    dom.on(document, 'mousemove', onmousemove)
-    dom.once(document, 'mouseup', function () {
-      dom.off(document, 'mousemove', onmousemove)
-    })
-
-  })
 }
 
 module.exports = init

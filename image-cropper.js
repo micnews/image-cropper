@@ -103,7 +103,6 @@ ImageCropper.prototype._wrap = function () {
 
   this._overlayImage.style.position = 'absolute'
   this._overlayImage.style.opacity = '0'
-  this._overlayImage.style['z-index'] = '1000'
 
   var cropContainer = document.createElement('div')
 
@@ -116,8 +115,8 @@ ImageCropper.prototype._wrap = function () {
 
   cropContainer.appendChild(this._croppedImage)
 
-  container.appendChild(this._overlayImage)
   container.appendChild(cropContainer)
+  container.appendChild(this._overlayImage)
 }
 
 module.exports = init

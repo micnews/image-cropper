@@ -11,6 +11,7 @@ var dom = require('dom-events')
       this._containerElm = options.containerElm
       this._croppedImage = options.croppedImage
       this._overlayImage = options.overlayImage
+      this._navigation = document.createElement('div')
       this._width = options.width
       this._height = options.height
       this._enabled = false
@@ -117,6 +118,13 @@ ImageCropper.prototype._wrap = function () {
 
   container.appendChild(cropContainer)
   container.appendChild(this._overlayImage)
+  container.appendChild(this._navigation)
+  this._navigation.style.position = 'absolute'
+  this._navigation.style.background = 'rgba(0,0,0,0.3)'
+  this._navigation.style.height = '50px'
+  this._navigation.style.width = '100%'
+  this._navigation.style.top = '0'
+  this._navigation.style.left = '0'
 }
 
 module.exports = init

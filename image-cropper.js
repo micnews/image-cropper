@@ -5,15 +5,13 @@ var dom = require('dom-events')
   , resetZoom = require('./lib/reset-zoom')
   , resizeImage = require('./lib/resize-image')
 
-  , ImageCropper = function (containerElm, croppedImage, backgroundImage, options) {
-      this._containerElm = containerElm
-      this._croppedImage = croppedImage
-      this._backgroundImage = backgroundImage
+  , ImageCropper = function (options) {
+      this._containerElm = options.containerElm
+      this._croppedImage = options.croppedImage
+      this._overlayImage = options.overlayImage
       this._width = options.width
       this._height = options.height
       this._enabled = false
-
-      this._backgroundImage.src = options.src
 
       this._wrap()
       this._makeDraggable()
@@ -21,11 +19,17 @@ var dom = require('dom-events')
 
   , init = function (containerElm, options, callback) {
       var croppedImage = new Image()
-        , backgroundImage = new Image()
-        , imageCropper = new ImageCropper(containerElm, croppedImage, backgroundImage, options)
+        , overlayImage = new Image()
+        , imageCropper = new ImageCropper({
+              containerElm: containerElm
+            , croppedImage: croppedImage
+            , overlayImage: overlayImage
+            , width: options.width
+            , height: options.height
+          })
 
       croppedImage.src = options.src
-      backgroundImage.src = options.src
+      overlayImage.src = options.src
 
       imageLoaded(croppedImage, function (err) {
         if (err)
@@ -33,11 +37,11 @@ var dom = require('dom-events')
 
         resetZoom(croppedImage, options.width, options.height)
 
-        imageLoaded(backgroundImage, function (err) {
+        imageLoaded(overlayImage, function (err) {
           if (err)
             return callback(err)
 
-          resetZoom(backgroundImage, options.width, options.height)
+          resetZoom(overlayImage, options.width, options.height)
 
           callback(null, imageCropper)
 
@@ -48,17 +52,17 @@ var dom = require('dom-events')
 ImageCropper.prototype.enable = function () {
   this._enabled = true
   this._croppedImage.style.cursor = 'move'
-  this._backgroundImage.style.opacity = '0.5'
+  this._overlayImage.style.opacity = '0.5'
 }
 
 ImageCropper.prototype.disable = function () {
   this._enabled = false
   this._croppedImage.style.cursor = ''
-  this._backgroundImage.style.opacity = '0'
+  this._overlayImage.style.opacity = '0'
 }
 
 ImageCropper.prototype._resizeImage = function (changeFactor) {
-  resizeImage(this._backgroundImage, changeFactor, this._width, this._height)
+  resizeImage(this._overlayImage, changeFactor, this._width, this._height)
   resizeImage(this._croppedImage, changeFactor, this._width, this._height)
 }
 
@@ -83,9 +87,9 @@ ImageCropper.prototype._wrap = function () {
   container.style.height = this._height
   container.style.position = 'relative'
 
-  this._backgroundImage.style.position = 'absolute'
-  this._backgroundImage.style.opacity = '0'
-  this._backgroundImage.style['z-index'] = '1000'
+  this._overlayImage.style.position = 'absolute'
+  this._overlayImage.style.opacity = '0'
+  this._overlayImage.style['z-index'] = '1000'
 
   var cropContainer = document.createElement('div')
 
@@ -98,12 +102,12 @@ ImageCropper.prototype._wrap = function () {
 
   cropContainer.appendChild(this._croppedImage)
 
-  container.appendChild(this._backgroundImage)
+  container.appendChild(this._overlayImage)
   container.appendChild(cropContainer)
 }
 
 ImageCropper.prototype._moveImage = function (leftChange, topChange) {
-  moveImage(this._backgroundImage, leftChange, topChange, this._width, this._height)
+  moveImage(this._overlayImage, leftChange, topChange, this._width, this._height)
   moveImage(this._croppedImage, leftChange, topChange, this._width, this._height)
 }
 
@@ -112,7 +116,7 @@ ImageCropper.prototype._makeDraggable = function () {
 
   // subscribe for mousedown on the image element
   // todo: make some nicer abstraction of this
-  dom.on(this._backgroundImage, 'mousedown', function () {
+  dom.on(this._overlayImage, 'mousedown', function () {
     if (!self._enabled)
       return
 

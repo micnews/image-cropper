@@ -5,6 +5,7 @@ var dom = require('dom-events')
   , moveImage = require('./lib/move-image')
   , resetZoom = require('./lib/reset-zoom')
   , resizeImage = require('./lib/resize-image')
+  , slider = require('./lib/slider')
 
   , ImageCropper = function (options) {
       var self = this
@@ -119,12 +120,20 @@ ImageCropper.prototype._wrap = function () {
   container.appendChild(cropContainer)
   container.appendChild(this._overlayImage)
   container.appendChild(this._navigation)
+
+  var sliderElm = document.createElement('div')
+
+  sliderElm.setAttribute('class', 'slider')
+
+  slider(sliderElm, { width: 70, lineHeight: 2, jackSize: 10 })
+
   this._navigation.style.position = 'absolute'
   this._navigation.style.background = 'rgba(0,0,0,0.3)'
   this._navigation.style.height = '50px'
   this._navigation.style.width = '100%'
   this._navigation.style.top = '0'
   this._navigation.style.left = '0'
+  this._navigation.appendChild(sliderElm)
 }
 
 module.exports = init

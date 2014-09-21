@@ -14,7 +14,7 @@ test('initialize', function (t) {
 
   t.equal(elm.style.width, '200px')
   t.equal(elm.style.height, '20px')
-  t.equal(elm.style.position, 'relative')
+  t.equal(elm.style.position, 'absolute')
 
   jack = elm.querySelector('.jack')
 

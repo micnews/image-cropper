@@ -13,6 +13,7 @@ var dom = require('dom-events')
       this._croppedImage = options.croppedImage
       this._overlayImage = options.overlayImage
       this._navigation = document.createElement('div')
+      this._zoomFactor = 1
       this._width = options.width
       this._height = options.height
       this._enabled = false
@@ -77,23 +78,26 @@ ImageCropper.prototype.disable = function () {
   this._overlayImage.style.opacity = '0'
 }
 
-ImageCropper.prototype._resizeImage = function (changeFactor) {
-  resizeImage(this._overlayImage, changeFactor, this._width, this._height)
-  resizeImage(this._croppedImage, changeFactor, this._width, this._height)
+ImageCropper.prototype._resizeImage = function (newZoomFactor) {
+  var oldZoomFactor = this._zoomFactor
+  this._zoomFactor = newZoomFactor
+
+  resizeImage(this._overlayImage, oldZoomFactor, this._zoomFactor, this._width, this._height)
+  resizeImage(this._croppedImage, oldZoomFactor, this._zoomFactor, this._width, this._height)
 }
 
 ImageCropper.prototype.zoomIn = function () {
   if (!this._enabled)
     return
 
-  this._resizeImage(1.1)
+  this._resizeImage(this._zoomFactor * 1.1)
 }
 
 ImageCropper.prototype.zoomOut = function () {
   if (!this._enabled)
     return
 
-  this._resizeImage(1/1.1)
+  this._resizeImage(this._zoomFactor / 1.1)
 }
 
 ImageCropper.prototype._wrap = function () {

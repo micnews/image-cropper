@@ -90,3 +90,28 @@ test('click inside container', function (t) {
 
   t.end()
 })
+
+test('container placed out', function (t) {
+  var elm = document.createElement('div')
+    , jack
+    , line
+
+  elm.style['margin-left'] = '100px'
+
+  document.body.appendChild(elm)
+
+  slider(elm, { width: 150, lineHeight: 3, jackSize: 30 })
+
+  jack = elm.querySelector('.jack')
+  line = elm.querySelector('.line')
+
+  // clientX: 200 => offsetX: 85 (line has left: 15px + 100 margin-left)
+  dom.emit(line, 'click', { clientX: 200, bubbles: true })
+
+  // jack should be in middle of click, e.g 15px jack on each side
+  // offsetX (see above) is 85, so then jack.style.left === 70px
+  t.equal(jack.style.left, '70px')
+  t.equal(jack.style.top, '0px')
+
+  t.end()
+})

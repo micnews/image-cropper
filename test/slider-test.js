@@ -8,6 +8,8 @@ test('initialize', function (t) {
     , jack
     , line
 
+  document.body.appendChild(elm)
+
   slider(elm, { width: 200, jackSize: 20, lineHeight: 2 })
 
   t.equal(elm.style.width, '200px')
@@ -44,15 +46,47 @@ test('click exactly on line', function (t) {
     , jack
     , line
 
+  document.body.appendChild(elm)
+
   slider(elm, { width: 150, lineHeight: 3, jackSize: 30 })
 
   jack = elm.querySelector('.jack')
   line = elm.querySelector('.line')
 
+  // clientX: 100 => offsetX: 85 (line has left: 15px)
   dom.emit(line, 'click', { clientX: 100, bubbles: true })
 
-  t.equal(jack.style.left, '85px') // jack should be in middle of click, e.g 15px jack on each side
+  // jack should be in middle of click, e.g 15px jack on each side
+  // offsetX (see above) is 85, so then jack.style.left === 70px
+  t.equal(jack.style.left, '70px')
   t.equal(jack.style.top, '0px')
+
+  t.end()
+})
+
+test('click inside container', function (t) {
+  var elm = document.createElement('div')
+    , jack
+
+  document.body.appendChild(elm)
+
+  slider(elm, { width: 140, lineHeight: 4, jackSize: 10 })
+  jack = elm.querySelector('.jack')
+
+  dom.emit(elm, 'click', { clientX: 100, clientY: 2, bubbles: true })
+
+  t.equal(jack.style.left, '95px')
+  t.equal(jack.style.top, '0px')
+
+  dom.emit(elm, 'click', { clientX: 0, clientY: 0, bubbles: true })
+
+  t.equal(jack.style.left, '0px')
+  t.equal(jack.style.top, '0px')
+
+
+  dom.emit(elm, 'click', { clientX: 140, clientY: 0, bubbles: true })
+
+  t.equal(jack.style.left, '130px')
 
   t.end()
 })

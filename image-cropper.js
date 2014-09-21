@@ -16,7 +16,12 @@ var dom = require('dom-events')
       this._zoomFactor = 1
       this._width = options.width
       this._height = options.height
+      this._scaleFactor = null
       this._enabled = false
+      // zoomFactor 1 === not zoomed
+      this._zoomFactor = 1
+      // this means that zoomFactor = 1 is zoomed in options.maxZoomFactor times
+      this._maxZoom = options.maxZoomFactor || 3
 
       this._wrap()
 
@@ -54,6 +59,8 @@ var dom = require('dom-events')
 
         resetZoom(croppedImage, options.width, options.height)
 
+        imageCropper._scaleFactor = croppedImage.width / croppedImage.naturalWidth
+
         imageLoaded(overlayImage, function (err) {
           if (err)
             return callback(err)
@@ -78,26 +85,11 @@ ImageCropper.prototype.disable = function () {
   this._overlayImage.style.opacity = '0'
 }
 
-ImageCropper.prototype._resizeImage = function (newZoomFactor) {
-  var oldZoomFactor = this._zoomFactor
-  this._zoomFactor = newZoomFactor
+ImageCropper.prototype._resizeImage = function (zoomFactor) {
+  this._zoomFactor = zoomFactor
 
-  resizeImage(this._overlayImage, oldZoomFactor, this._zoomFactor, this._width, this._height)
-  resizeImage(this._croppedImage, oldZoomFactor, this._zoomFactor, this._width, this._height)
-}
-
-ImageCropper.prototype.zoomIn = function () {
-  if (!this._enabled)
-    return
-
-  this._resizeImage(this._zoomFactor * 1.1)
-}
-
-ImageCropper.prototype.zoomOut = function () {
-  if (!this._enabled)
-    return
-
-  this._resizeImage(this._zoomFactor / 1.1)
+  resizeImage(this._overlayImage, this._scaleFactor * zoomFactor, this._width, this._height)
+  resizeImage(this._croppedImage, this._scaleFactor * zoomFactor, this._width, this._height)
 }
 
 ImageCropper.prototype._wrap = function () {
@@ -129,7 +121,13 @@ ImageCropper.prototype._wrap = function () {
 
   sliderElm.setAttribute('class', 'slider')
 
-  slider(sliderElm, { width: 70, lineHeight: 2, jackSize: 10 }, function () {})
+  var self = this
+  slider(sliderElm, { width: 70, lineHeight: 2, jackSize: 10 }, function (zoomFactor) {
+
+    var newZoomFactor = 1 + (zoomFactor * (self._maxZoom - 1))
+
+    self._resizeImage(newZoomFactor)
+  })
 
   this._navigation.style.position = 'absolute'
   this._navigation.style.background = 'rgba(0,0,0,0.3)'

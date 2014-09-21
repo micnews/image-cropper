@@ -56,8 +56,7 @@ test('click exactly on line', function (t) {
   jack = elm.querySelector('.jack')
   line = elm.querySelector('.line')
 
-  // clientX: 100 => offsetX: 85 (line has left: 15px)
-  dom.emit(line, 'click', { clientX: 100, bubbles: true })
+  dom.emit(elm, 'click', { clientX: 85, clientY: 15, bubbles: true })
 
   // jack should be in middle of click, e.g 15px jack on each side
   // offsetX (see above) is 85, so then jack.style.left === 70px
@@ -109,7 +108,7 @@ test('container placed out', function (t) {
   line = elm.querySelector('.line')
 
   // clientX: 200 => offsetX: 85 (line has left: 15px + 100 margin-left)
-  dom.emit(line, 'click', { clientX: 200, bubbles: true })
+  dom.emit(elm, 'click', { clientX: 185, clientY: 15, bubbles: true })
 
   // jack should be in middle of click, e.g 15px jack on each side
   // offsetX (see above) is 85, so then jack.style.left === 70px

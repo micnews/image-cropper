@@ -125,7 +125,7 @@ ImageCropper.prototype._wrap = function () {
 
   sliderElm.setAttribute('class', 'slider')
 
-  slider(sliderElm, { width: 70, lineHeight: 2, jackSize: 10 })
+  slider(sliderElm, { width: 70, lineHeight: 2, jackSize: 10 }, function () {})
 
   this._navigation.style.position = 'absolute'
   this._navigation.style.background = 'rgba(0,0,0,0.3)'

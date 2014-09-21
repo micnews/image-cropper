@@ -1,7 +1,10 @@
-var dom = require('dom-events')
+var EventEmitter = require('events').EventEmitter
+
+  , dom = require('dom-events')
   , test = require('tape')
 
   , slider = require('../lib/slider')
+  , noop = function () {}
 
 test('initialize', function (t) {
   var elm = document.createElement('div')
@@ -10,7 +13,7 @@ test('initialize', function (t) {
 
   document.body.appendChild(elm)
 
-  slider(elm, { width: 200, jackSize: 20, lineHeight: 2 })
+  slider(elm, { width: 200, jackSize: 20, lineHeight: 2 }, noop)
 
   t.equal(elm.style.width, '200px')
   t.equal(elm.style.height, '20px')
@@ -48,7 +51,7 @@ test('click exactly on line', function (t) {
 
   document.body.appendChild(elm)
 
-  slider(elm, { width: 150, lineHeight: 3, jackSize: 30 })
+  slider(elm, { width: 150, lineHeight: 3, jackSize: 30 }, noop)
 
   jack = elm.querySelector('.jack')
   line = elm.querySelector('.line')
@@ -70,7 +73,7 @@ test('click inside container', function (t) {
 
   document.body.appendChild(elm)
 
-  slider(elm, { width: 140, lineHeight: 4, jackSize: 10 })
+  slider(elm, { width: 140, lineHeight: 4, jackSize: 10 }, noop)
   jack = elm.querySelector('.jack')
 
   dom.emit(elm, 'click', { clientX: 100, clientY: 2, bubbles: true })
@@ -100,7 +103,7 @@ test('container placed out', function (t) {
 
   document.body.appendChild(elm)
 
-  slider(elm, { width: 150, lineHeight: 3, jackSize: 30 })
+  slider(elm, { width: 150, lineHeight: 3, jackSize: 30 }, noop)
 
   jack = elm.querySelector('.jack')
   line = elm.querySelector('.line')
@@ -114,4 +117,33 @@ test('container placed out', function (t) {
   t.equal(jack.style.top, '0px')
 
   t.end()
+})
+
+test('callback get correct factor', function (t) {
+  var elm = document.createElement('div')
+    , emitter = new EventEmitter()
+
+  document.body.appendChild(elm)
+
+  slider(elm, { width: 120, lineHeight: 2, jackSize: 10 }, function (factor) {
+    emitter.emit('factor', factor)
+  })
+
+  emitter.once('factor', function (factor) {
+    t.equal(factor, 0.5)
+    emitter.once('factor', function (factor) {
+      t.equal(factor, 0)
+      emitter.once('factor', function (factor) {
+        t.equal(factor, 1)
+        t.end()
+      })
+
+      dom.emit(elm, 'click', {clientX: 120, bubbles: true })
+    })
+
+    dom.emit(elm, 'click', { clientX: 0, bubbles: true })
+  })
+
+  dom.emit(elm, 'click', { clientX: 60, bubbles: true })
+
 })

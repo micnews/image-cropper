@@ -67,6 +67,8 @@ var dom = require('dom-events')
           , height: height
         })
 
+        results.disable()
+
         callback(null, results)
       })
     }

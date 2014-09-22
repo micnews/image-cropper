@@ -1,11 +1,10 @@
 var dom = require('dom-events')
-  , loadImages = require('./lib/load-images')
 
   , draggable = require('./lib/draggable')
+  , loadImages = require('./lib/load-images')
   , moveImage = require('./lib/move-image')
-  , resetZoom = require('./lib/reset-zoom')
-  , resizeImage = require('./lib/resize-image')
   , navigation = require('./lib/navigation')
+  , resetZoom = require('./lib/reset-zoom')
   , setupElements = require('./lib/setup-elements')
 
   , init = function (containerElm, options, callback) {

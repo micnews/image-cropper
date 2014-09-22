@@ -122,7 +122,7 @@ ImageCropper.prototype._wrap = function () {
   sliderElm.setAttribute('class', 'slider')
 
   var self = this
-  slider(sliderElm, { width: 70, lineHeight: 2, jackSize: 10 }, function (zoomFactor) {
+  slider(sliderElm, { width: 70, lineHeight: 2, handleSize: 10 }, function (zoomFactor) {
 
     var newZoomFactor = 1 + (zoomFactor * (self._maxZoom - 1))
 

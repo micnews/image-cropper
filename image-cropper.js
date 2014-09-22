@@ -8,15 +8,31 @@ var dom = require('dom-events')
   , navigation = require('./lib/navigation')
   , setupElements = require('./lib/setup-elements')
 
-  , ImageCropper = function (options) {
-      var self = this
-      this._croppedImage = options.croppedImage
-      this._overlayImage = options.overlayImage
-      this._enabled = false
+  , init = function (containerElm, options, callback) {
+      var navigationElm = document.createElement('div')
+        , croppedImage = new Image()
+        , overlayImage = new Image()
+        , images = [ croppedImage, overlayImage ]
+        , width = options.width
+        , height = options.height
+        , maxZoom = options.maxZoom || 3
+        , enabled = false
+        , results = {
+              enable: function () {
+                enabled = true
+                croppedImage.style.cursor = 'move'
+                overlayImage.style.opacity = '0.5'
+              }
+            , disable: function () {
+                enabled = false
+                croppedImage.style.cursor = ''
+                overlayImage.style.opacity = '0'
+              }
+          }
 
-      draggable(options.overlayImage, function (event) {
-        ;[ options.overlayImage, options.croppedImage ].forEach(function (image) {
-          if (self._enabled)
+      draggable(overlayImage, function (event) {
+        images.forEach(function (image) {
+          if (enabled)
             moveImage(
                 image
               , event.movementX
@@ -26,20 +42,6 @@ var dom = require('dom-events')
             )
         })
       })
-    }
-
-  , init = function (containerElm, options, callback) {
-      var navigationElm = document.createElement('div')
-        , croppedImage = new Image()
-        , overlayImage = new Image()
-        , images = [ croppedImage, overlayImage ]
-        , width = options.width
-        , height = options.height
-        , maxZoom = options.maxZoom || 3
-        , imageCropper = new ImageCropper({
-              croppedImage: croppedImage
-            , overlayImage: overlayImage
-          })
 
       setupElements({
           containerElm: containerElm
@@ -55,31 +57,17 @@ var dom = require('dom-events')
 
         images.forEach(function (image) { resetZoom(image, width, height) })
 
-        var scaleFactor = croppedImage.width / croppedImage.naturalWidth
-
         navigation({
             container: navigationElm
-          , scaleFactor: scaleFactor
+          , scaleFactor: croppedImage.width / croppedImage.naturalWidth
           , maxZoom: maxZoom
           , images: images
           , width: width
           , height: height
         })
 
-        callback(null, imageCropper)
+        callback(null, results)
       })
     }
-
-ImageCropper.prototype.enable = function () {
-  this._enabled = true
-  this._croppedImage.style.cursor = 'move'
-  this._overlayImage.style.opacity = '0.5'
-}
-
-ImageCropper.prototype.disable = function () {
-  this._enabled = false
-  this._croppedImage.style.cursor = ''
-  this._overlayImage.style.opacity = '0'
-}
 
 module.exports = init

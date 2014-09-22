@@ -13,15 +13,9 @@ var dom = require('dom-events')
       this._croppedImage = options.croppedImage
       this._overlayImage = options.overlayImage
       this._navigation = options.navigationElm
-      this._zoomFactor = 1
       this._width = options.width
       this._height = options.height
-      this._scaleFactor = null
       this._enabled = false
-      // zoomFactor 1 === not zoomed
-      this._zoomFactor = 1
-      // this means that zoomFactor = 1 is zoomed in options.maxZoomFactor times
-      this._maxZoom = options.maxZoomFactor || 3
 
       this._wrap()
 
@@ -46,6 +40,7 @@ var dom = require('dom-events')
         , images = [ croppedImage, overlayImage ]
         , width = options.width
         , height = options.height
+        , maxZoom = options.maxZoom || 3
         , imageCropper = new ImageCropper({
               containerElm: containerElm
             , navigationElm: navigationElm
@@ -65,8 +60,7 @@ var dom = require('dom-events')
         navigation({
             container: navigationElm
           , scaleFactor: scaleFactor
-            // TODO: change this so that it's not needed
-          , maxZoom: imageCropper._maxZoom
+          , maxZoom: maxZoom
           , images: images
           , width: width
           , height: height

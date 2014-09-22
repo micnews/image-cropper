@@ -5,7 +5,7 @@ var dom = require('dom-events')
   , moveImage = require('./lib/move-image')
   , resetZoom = require('./lib/reset-zoom')
   , resizeImage = require('./lib/resize-image')
-  , slider = require('./lib/slider')
+  , navigation = require('./lib/navigation')
 
   , ImageCropper = function (options) {
       var self = this
@@ -60,30 +60,17 @@ var dom = require('dom-events')
 
         images.forEach(function (image) { resetZoom(image, width, height) })
 
-        // TODO: extract this to a separate navigation-thingy
-
         var scaleFactor = croppedImage.width / croppedImage.naturalWidth
 
-        var sliderElm = document.createElement('div')
-
-        sliderElm.setAttribute('class', 'slider')
-
-        slider(sliderElm, { width: 70, lineHeight: 2, handleSize: 10 }, function (sliderValue) {
-
-          var zoomFactor = 1 + (sliderValue * (imageCropper._maxZoom - 1))
-
-          images.forEach(function (image) {
-            resizeImage(image, scaleFactor * zoomFactor, width, height)
-          })
+        navigation({
+            container: navigationElm
+          , scaleFactor: scaleFactor
+            // TODO: change this so that it's not needed
+          , maxZoom: imageCropper._maxZoom
+          , images: images
+          , width: width
+          , height: height
         })
-
-        navigationElm.style.position = 'absolute'
-        navigationElm.style.background = 'rgba(0,0,0,0.3)'
-        navigationElm.style.height = '50px'
-        navigationElm.style.width = '100%'
-        navigationElm.style.top = '0'
-        navigationElm.style.left = '0'
-        navigationElm.appendChild(sliderElm)
 
         callback(null, imageCropper)
       })

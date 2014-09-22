@@ -1,5 +1,5 @@
 var dom = require('dom-events')
-  , imageLoaded = require('image-loaded')
+  , loadImages = require('./lib/load-images')
 
   , draggable = require('./lib/draggable')
   , moveImage = require('./lib/move-image')
@@ -42,34 +42,25 @@ var dom = require('dom-events')
   , init = function (containerElm, options, callback) {
       var croppedImage = new Image()
         , overlayImage = new Image()
+        , images = [ croppedImage, overlayImage ]
+        , width = options.width
+        , height = options.height
         , imageCropper = new ImageCropper({
               containerElm: containerElm
             , croppedImage: croppedImage
             , overlayImage: overlayImage
-            , width: options.width
-            , height: options.height
+            , width: width
+            , height: height
           })
 
-      croppedImage.src = options.src
-      overlayImage.src = options.src
+      loadImages(images, options.src, function (err) {
+        if (err) return callback(err)
 
-      imageLoaded(croppedImage, function (err) {
-        if (err)
-          return callback(err)
-
-        resetZoom(croppedImage, options.width, options.height)
+        images.forEach(function (image) { resetZoom(image, width, height) })
 
         imageCropper._scaleFactor = croppedImage.width / croppedImage.naturalWidth
 
-        imageLoaded(overlayImage, function (err) {
-          if (err)
-            return callback(err)
-
-          resetZoom(overlayImage, options.width, options.height)
-
-          callback(null, imageCropper)
-
-        })
+        callback(null, imageCropper)
       })
     }
 

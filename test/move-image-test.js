@@ -62,7 +62,7 @@ test('moving it too much down', function (t) {
   t.end()
 })
 
-test('moving it within reason', function (t) {
+test('moving it within the container', function (t) {
   var image = new Image()
   image.width = 100
   image.height = 100
@@ -73,5 +73,20 @@ test('moving it within reason', function (t) {
 
   t.equal(image.style.left, '-25px', 'should have correct image.style.left')
   t.equal(image.style.top, '-20px', 'should have correct image.style.top')
+  t.end()
+})
+
+test('moving it a float distance', function (t) {
+  var image = new Image()
+
+  image.width = 100
+  image.height = 100
+  image.style.left = '-0.5px'
+  image.style.top = '-1.5px'
+
+  moveImage(image, -2.8, -1.4, 50, 50)
+
+  t.equal(image.style.left, '-3.3px', 'should have correct image.style.left')
+  t.equal(image.style.top, '-2.9px', 'should have correct image.style.top')
   t.end()
 })

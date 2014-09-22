@@ -6,18 +6,13 @@ var dom = require('dom-events')
   , resetZoom = require('./lib/reset-zoom')
   , resizeImage = require('./lib/resize-image')
   , navigation = require('./lib/navigation')
+  , setupElements = require('./lib/setup-elements')
 
   , ImageCropper = function (options) {
       var self = this
-      this._containerElm = options.containerElm
       this._croppedImage = options.croppedImage
       this._overlayImage = options.overlayImage
-      this._navigation = options.navigationElm
-      this._width = options.width
-      this._height = options.height
       this._enabled = false
-
-      this._wrap()
 
       draggable(options.overlayImage, function (event) {
         ;[ options.overlayImage, options.croppedImage ].forEach(function (image) {
@@ -42,13 +37,18 @@ var dom = require('dom-events')
         , height = options.height
         , maxZoom = options.maxZoom || 3
         , imageCropper = new ImageCropper({
-              containerElm: containerElm
-            , navigationElm: navigationElm
-            , croppedImage: croppedImage
+              croppedImage: croppedImage
             , overlayImage: overlayImage
-            , width: width
-            , height: height
           })
+
+      setupElements({
+          containerElm: containerElm
+        , croppedImage: croppedImage
+        , overlayImage: overlayImage
+        , navigation: navigationElm
+        , width: width
+        , height: height
+      })
 
       loadImages(images, options.src, function (err) {
         if (err) return callback(err)
@@ -80,32 +80,6 @@ ImageCropper.prototype.disable = function () {
   this._enabled = false
   this._croppedImage.style.cursor = ''
   this._overlayImage.style.opacity = '0'
-}
-
-ImageCropper.prototype._wrap = function () {
-  var container = this._containerElm
-
-  container.style.width = this._width
-  container.style.height = this._height
-  container.style.position = 'relative'
-
-  this._overlayImage.style.position = 'absolute'
-  this._overlayImage.style.opacity = '0'
-
-  var cropContainer = document.createElement('div')
-
-  cropContainer.style.width = this._width
-  cropContainer.style.height = this._height
-  cropContainer.style.position = 'absolute'
-  cropContainer.style.overflow = 'hidden'
-
-  this._croppedImage.style.position = 'absolute'
-
-  cropContainer.appendChild(this._croppedImage)
-
-  container.appendChild(cropContainer)
-  container.appendChild(this._overlayImage)
-  container.appendChild(this._navigation)
 }
 
 module.exports = init

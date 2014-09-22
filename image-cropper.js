@@ -12,7 +12,7 @@ var dom = require('dom-events')
       this._containerElm = options.containerElm
       this._croppedImage = options.croppedImage
       this._overlayImage = options.overlayImage
-      this._navigation = document.createElement('div')
+      this._navigation = options.navigationElm
       this._zoomFactor = 1
       this._width = options.width
       this._height = options.height
@@ -40,13 +40,15 @@ var dom = require('dom-events')
     }
 
   , init = function (containerElm, options, callback) {
-      var croppedImage = new Image()
+      var navigationElm = document.createElement('div')
+        , croppedImage = new Image()
         , overlayImage = new Image()
         , images = [ croppedImage, overlayImage ]
         , width = options.width
         , height = options.height
         , imageCropper = new ImageCropper({
               containerElm: containerElm
+            , navigationElm: navigationElm
             , croppedImage: croppedImage
             , overlayImage: overlayImage
             , width: width
@@ -58,7 +60,30 @@ var dom = require('dom-events')
 
         images.forEach(function (image) { resetZoom(image, width, height) })
 
-        imageCropper._scaleFactor = croppedImage.width / croppedImage.naturalWidth
+        // TODO: extract this to a separate navigation-thingy
+
+        var scaleFactor = croppedImage.width / croppedImage.naturalWidth
+
+        var sliderElm = document.createElement('div')
+
+        sliderElm.setAttribute('class', 'slider')
+
+        slider(sliderElm, { width: 70, lineHeight: 2, handleSize: 10 }, function (sliderValue) {
+
+          var zoomFactor = 1 + (sliderValue * (imageCropper._maxZoom - 1))
+
+          images.forEach(function (image) {
+            resizeImage(image, scaleFactor * zoomFactor, width, height)
+          })
+        })
+
+        navigationElm.style.position = 'absolute'
+        navigationElm.style.background = 'rgba(0,0,0,0.3)'
+        navigationElm.style.height = '50px'
+        navigationElm.style.width = '100%'
+        navigationElm.style.top = '0'
+        navigationElm.style.left = '0'
+        navigationElm.appendChild(sliderElm)
 
         callback(null, imageCropper)
       })
@@ -74,13 +99,6 @@ ImageCropper.prototype.disable = function () {
   this._enabled = false
   this._croppedImage.style.cursor = ''
   this._overlayImage.style.opacity = '0'
-}
-
-ImageCropper.prototype._resizeImage = function (zoomFactor) {
-  this._zoomFactor = zoomFactor
-
-  resizeImage(this._overlayImage, this._scaleFactor * zoomFactor, this._width, this._height)
-  resizeImage(this._croppedImage, this._scaleFactor * zoomFactor, this._width, this._height)
 }
 
 ImageCropper.prototype._wrap = function () {
@@ -107,26 +125,6 @@ ImageCropper.prototype._wrap = function () {
   container.appendChild(cropContainer)
   container.appendChild(this._overlayImage)
   container.appendChild(this._navigation)
-
-  var sliderElm = document.createElement('div')
-
-  sliderElm.setAttribute('class', 'slider')
-
-  var self = this
-  slider(sliderElm, { width: 70, lineHeight: 2, handleSize: 10 }, function (zoomFactor) {
-
-    var newZoomFactor = 1 + (zoomFactor * (self._maxZoom - 1))
-
-    self._resizeImage(newZoomFactor)
-  })
-
-  this._navigation.style.position = 'absolute'
-  this._navigation.style.background = 'rgba(0,0,0,0.3)'
-  this._navigation.style.height = '50px'
-  this._navigation.style.width = '100%'
-  this._navigation.style.top = '0'
-  this._navigation.style.left = '0'
-  this._navigation.appendChild(sliderElm)
 }
 
 module.exports = init

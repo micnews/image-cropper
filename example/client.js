@@ -31,4 +31,19 @@ dom.on(window, 'load', function() {
 
   })
 
+  var containerElm3 = document.querySelector('#image3 .image-cropper-container')
+
+  imageCropper(containerElm3, { width: 500, height: 268, src: 'image.jpg' }, function (err, cropper) {
+
+    dom.on(document.querySelector('#image3 .enable'), 'click', function () {
+      cropper.enable()
+    })
+
+    dom.on(document.querySelector('#image3 .disable'), 'click', function () {
+      cropper.disable()
+    })
+
+  })
+
+
 })

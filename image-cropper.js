@@ -1,6 +1,7 @@
 var dom = require('dom-events')
 
   , draggable = require('./lib/draggable')
+  , ensureElement = require('./lib/ensure-element')
   , loadImages = require('./lib/load-images')
   , moveImage = require('./lib/move-image')
   , navigation = require('./lib/navigation')
@@ -8,7 +9,7 @@ var dom = require('dom-events')
   , setupElements = require('./lib/setup-elements')
 
   , init = function (containerElm, options, callback) {
-      var navigationElm = document.createElement('div')
+      var navigationElm = ensureElement(containerElm, 'navigation')
         , croppedImage = new Image()
         , overlayImage = new Image()
         , images = [ croppedImage, overlayImage ]

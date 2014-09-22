@@ -21,11 +21,13 @@ var dom = require('dom-events')
                 enabled = true
                 croppedImage.style.cursor = 'move'
                 overlayImage.style.opacity = '0.5'
+                overlayImage.style['z-index'] = ''
               }
             , disable: function () {
                 enabled = false
                 croppedImage.style.cursor = ''
                 overlayImage.style.opacity = '0'
+                overlayImage.style['z-index'] = '-1000'
               }
           }
 

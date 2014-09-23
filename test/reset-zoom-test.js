@@ -1,10 +1,9 @@
 var test = require('tape')
 
   , resetZoom = require('../lib/reset-zoom')
-  , image = require('./common').testImage(60, 80)
+  , image = require('./common').createTestImage(60, 80)
 
 test('image.{naturalWidth, naturalHeight} same size as area', function (t) {
-
   image.width = 200
   image.height = 200
 
@@ -15,7 +14,6 @@ test('image.{naturalWidth, naturalHeight} same size as area', function (t) {
   t.equal(image.width, 60)
   t.equal(image.height, 80)
   t.end()
-
 })
 
 test('image smaller than area', function (t) {
@@ -58,7 +56,6 @@ test('image larger than area', function (t) {
   t.equal(image.style.top, '-5px')
   t.equal(image.width, 30)
   t.equal(image.height, 40)
-
 
   t.end()
 })

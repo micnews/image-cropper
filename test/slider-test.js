@@ -31,8 +31,8 @@ test('initialize', function (t) {
   }
 
   line = elm.querySelector('.line')
-  t.ok(line)
 
+  t.ok(line)
   if (line) {
     t.equal(line.style.position, 'absolute')
     t.equal(line.style.width, '180px') // line of slider - space for handle
@@ -62,7 +62,6 @@ test('click exactly on line', function (t) {
   // offsetX (see above) is 85, so then handle.style.left === 70px
   t.equal(handle.style.left, '70px')
   t.equal(handle.style.top, '0px')
-
   t.end()
 })
 
@@ -85,11 +84,9 @@ test('click inside container', function (t) {
   t.equal(handle.style.left, '0px')
   t.equal(handle.style.top, '0px')
 
-
   dom.emit(elm, 'click', { clientX: 140, clientY: 0, bubbles: true })
 
   t.equal(handle.style.left, '130px')
-
   t.end()
 })
 
@@ -114,7 +111,6 @@ test('container placed out', function (t) {
   // offsetX (see above) is 85, so then handle.style.left === 70px
   t.equal(handle.style.left, '70px')
   t.equal(handle.style.top, '0px')
-
   t.end()
 })
 
@@ -144,5 +140,4 @@ test('callback get correct factor', function (t) {
   })
 
   dom.emit(elm, 'click', { clientX: 60, bubbles: true })
-
 })

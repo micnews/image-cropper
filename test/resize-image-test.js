@@ -1,10 +1,11 @@
 var test = require('tape')
 
   , resizeImage = require('../lib/resize-image')
-  , image = require('./common').testImage(60, 80)
+  , image = require('./common').createTestImage(60, 80)
 
 test('not resizing image', function (t) {
   resizeImage(image, 1, 60, 80)
+
   t.equal(image.style.left, '0px')
   t.equal(image.style.top, '0px')
   t.equal(image.width, 60)
@@ -14,6 +15,7 @@ test('not resizing image', function (t) {
 
 test('make image larger', function (t) {
   resizeImage(image, 2, 60, 80)
+
   t.equal(image.style.left, '-30px')
   t.equal(image.style.top, '-40px')
   t.equal(image.width, 120)
@@ -31,6 +33,7 @@ test('make image smaller', function (t) {
   image.style.top = '-30px'
 
   resizeImage(image, 0.5, 20, 20)
+
   t.equal(image.style.left, '-5px')
   t.equal(image.style.top, '-10px')
   t.equal(image.width, 30)
@@ -48,6 +51,7 @@ test('try to make image to small', function (t) {
   image.style.top = '-40px'
 
   resizeImage(image, 0.000001, 30, 20)
+
   t.equal(image.style.left, '0px')
   t.equal(image.style.top, '-20px')
   t.end()

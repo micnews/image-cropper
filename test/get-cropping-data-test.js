@@ -5,9 +5,8 @@ var test = require('tape')
   , common = require('./common')
 
 test('simple', function (t) {
-
   var options = {
-          image: common.testImage(400, 300)
+          image: common.createTestImage(400, 300)
         , container: document.createElement('div')
       }
 
@@ -26,12 +25,13 @@ test('simple', function (t) {
 
 test('zoomed in', function (t) {
   var options = {
-          image: common.testImage(200, 200)
+          image: common.createTestImage(200, 200)
         , container: document.createElement('div')
       }
 
   options.container.style.width = '200px'
   options.container.style.height = '200px'
+
   // image is zoomed in to double the size
   options.image.width = 400
   options.image.height = 400

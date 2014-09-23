@@ -1,6 +1,6 @@
 var test = require('tape')
   , moveImage = require('../lib/move-image')
-  , createTestImage = require('./common').testImage
+  , createTestImage = require('./common').createTestImage
 
 test('not moving image', function (t) {
   var image = createTestImage(100, 100)

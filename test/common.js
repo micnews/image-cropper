@@ -1,5 +1,5 @@
 var common = {
-        testImage: function (width, height) {
+        createTestImage: function (width, height) {
           var canvas = document.createElement('canvas')
             , image = new Image()
 

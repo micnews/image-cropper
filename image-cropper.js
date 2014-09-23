@@ -18,8 +18,36 @@ var dom = require('dom-events')
         , height = options.height
         , maxZoom = options.maxZoom || 3
         , enabled = false
+          // need to save these for the cancel-button to work properly
+        , originalImageProperties = {
+              width: croppedImage.width
+            , height: croppedImage.height
+            , top: croppedImage.style.top
+            , left: croppedImage.style.left
+          }
         , results = {
               enable: function (callback) {
+                var saveElm = navigationElm.querySelector('.save')
+                  , cancelElm = navigationElm.querySelector('.cancel')
+                  , onsave = function () {
+                      if (callback) callback()
+                      results.disable()
+
+                      dom.off(cancelElm, 'click', oncancel)
+                    }
+                  , oncancel = function () {
+                      images.forEach(function (image) {
+                        image.width = originalImageProperties.width
+                        image.height = originalImageProperties.height
+                        image.style.top = originalImageProperties.top
+                        image.style.left = originalImageProperties.left
+                      })
+
+                      results.disable()
+
+                      dom.off(saveElm, 'click', onsave)
+                    }
+
                 enabled = true
                 croppedImage.style.cursor = 'move'
                 overlayImage.style.opacity = '0.5'
@@ -27,10 +55,16 @@ var dom = require('dom-events')
                 navigationElm.style.opacity = '1'
                 navigationElm.style['z-index'] = ''
 
-                dom.once(navigationElm.querySelector('.save'), 'click', function () {
-                  if (callback) callback()
-                  results.disable()
-                })
+                originalImageProperties = {
+                    width: croppedImage.width
+                  , height: croppedImage.height
+                  , top: croppedImage.style.top
+                  , left: croppedImage.style.left
+                }
+
+                dom.once(navigationElm.querySelector('.save'), 'click', onsave)
+
+                dom.once(navigationElm.querySelector('.cancel'), 'click', oncancel)
               }
             , disable: function () {
                 enabled = false

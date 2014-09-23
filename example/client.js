@@ -11,10 +11,6 @@ dom.on(window, 'load', function() {
       cropper.enable()
     })
 
-    dom.on(document.querySelector('#image1 .disable'), 'click', function () {
-      cropper.disable()
-    })
-
   })
 
   var containerElm2 = document.querySelector('#image2 .image-cropper-container')
@@ -23,10 +19,6 @@ dom.on(window, 'load', function() {
 
     dom.on(document.querySelector('#image2 .enable'), 'click', function () {
       cropper.enable()
-    })
-
-    dom.on(document.querySelector('#image2 .disable'), 'click', function () {
-      cropper.disable()
     })
 
   })
@@ -40,10 +32,6 @@ dom.on(window, 'load', function() {
         console.log('finished cropping - cropper is now disabled')
         console.log(JSON.stringify(cropper.getCroppingData()))
       })
-    })
-
-    dom.on(document.querySelector('#image3 .disable'), 'click', function () {
-      cropper.disable()
     })
 
   })

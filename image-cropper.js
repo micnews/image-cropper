@@ -25,13 +25,21 @@ var dom = require('dom-events')
             , top: croppedImage.style.top
             , left: croppedImage.style.left
           }
+        , disable = function () {
+            enabled = false
+            croppedImage.style.cursor = ''
+            overlayImage.style.opacity = '0'
+            overlayImage.style['z-index'] = '-1000'
+            navigationElm.style.opacity = '0'
+            navigationElm.style['z-index'] = '-1000'
+          }
         , results = {
               enable: function (callback) {
                 var saveElm = navigationElm.querySelector('.save')
                   , cancelElm = navigationElm.querySelector('.cancel')
                   , onsave = function () {
                       if (callback) callback()
-                      results.disable()
+                      disable()
 
                       dom.off(cancelElm, 'click', oncancel)
                     }
@@ -43,7 +51,7 @@ var dom = require('dom-events')
                         image.style.left = originalImageProperties.left
                       })
 
-                      results.disable()
+                      disable()
 
                       dom.off(saveElm, 'click', onsave)
                     }
@@ -65,14 +73,6 @@ var dom = require('dom-events')
                 dom.once(navigationElm.querySelector('.save'), 'click', onsave)
 
                 dom.once(navigationElm.querySelector('.cancel'), 'click', oncancel)
-              }
-            , disable: function () {
-                enabled = false
-                croppedImage.style.cursor = ''
-                overlayImage.style.opacity = '0'
-                overlayImage.style['z-index'] = '-1000'
-                navigationElm.style.opacity = '0'
-                navigationElm.style['z-index'] = '-1000'
               }
             , getCroppingData: function () {
                 return getCroppingData({ image: croppedImage, container: containerElm })
@@ -115,7 +115,7 @@ var dom = require('dom-events')
           , height: height
         })
 
-        results.disable()
+        disable()
 
         callback(null, results)
       })

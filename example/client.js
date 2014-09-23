@@ -36,7 +36,10 @@ dom.on(window, 'load', function() {
   imageCropper(containerElm3, { width: 500, height: 268, src: 'image.jpg' }, function (err, cropper) {
 
     dom.on(document.querySelector('#image3 .enable'), 'click', function () {
-      cropper.enable()
+      cropper.enable(function () {
+        console.log('finished cropping - cropper is now disabled')
+        console.log(JSON.stringify(cropper.getCroppingData()))
+      })
     })
 
     dom.on(document.querySelector('#image3 .disable'), 'click', function () {
@@ -44,6 +47,5 @@ dom.on(window, 'load', function() {
     })
 
   })
-
 
 })

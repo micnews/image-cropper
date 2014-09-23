@@ -19,20 +19,29 @@ var dom = require('dom-events')
         , maxZoom = options.maxZoom || 3
         , enabled = false
         , results = {
-              enable: function () {
+              enable: function (callback) {
                 enabled = true
                 croppedImage.style.cursor = 'move'
                 overlayImage.style.opacity = '0.5'
                 overlayImage.style['z-index'] = ''
+                navigationElm.style.opacity = '1'
+                navigationElm.style['z-index'] = ''
+
+                dom.once(navigationElm.querySelector('.save'), 'click', function () {
+                  if (callback) callback()
+                  results.disable()
+                })
               }
             , disable: function () {
                 enabled = false
                 croppedImage.style.cursor = ''
                 overlayImage.style.opacity = '0'
                 overlayImage.style['z-index'] = '-1000'
+                navigationElm.style.opacity = '0'
+                navigationElm.style['z-index'] = '-1000'
               }
             , getCroppingData: function () {
-                return getCroppingData(croppedImage)
+                return getCroppingData({ image: croppedImage, container: containerElm })
               }
           }
 

@@ -24,12 +24,41 @@
       left: 122px;
     }
 
-    .navigation .save, .navigation .cancel {
-      color: white;
+    .navigation .buttons {
+      position: absolute;
+      right: 10px;
+      top: 10px;
     }
 
     .image-example {
       margin-bottom: 20px;
+    }
+
+    .enabled img {
+      cursor: move;
+    }
+
+    .overlay {
+      display: none;
+    }
+
+    .enabled .overlay {
+      opacity: 0.5;
+      display: block;
+    }
+
+    .navigation {
+      display: none;
+      background: rgba(0, 0, 0, 0.3);
+      width: 100%;
+      height: 50px;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .enabled .navigation {
+      display: block;
     }
 
   </style>
@@ -38,24 +67,16 @@
 <body>
   <script type="text/javascript" src="client.js"></script>
 
-<div id="image1" class="image-example">
-  <button class="enable">enable</button>
-
-  <div class="image-cropper-container"></div>
-</div>
-
-<div id="image2" class="image-example">
-  <button class="enable">enable</button>
-
-  <div class="image-cropper-container"></div>
-</div>
-
-<div id="image3" class="image-example">
+<div id="image" class="image-example">
   <button class="enable">enable</button>
 
   <div class="image-cropper-container">
     <div class="navigation">
       <span class="zoom-text">Zoom</span>
+      <div class="buttons">
+        <button class="cancel">cancel</button>
+        <button class="save">save</button>
+      </div>
     </div>
   </div>
 </div>

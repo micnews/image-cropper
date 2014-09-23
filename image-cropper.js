@@ -29,11 +29,8 @@ var dom = require('dom-events')
             var callback = options.callback || function () {}
 
             enabled = true
-            croppedImage.style.cursor = 'move'
-            overlayImage.style.opacity = '0.5'
-            overlayImage.style['z-index'] = ''
-            navigationElm.style.opacity = '1'
-            navigationElm.style['z-index'] = ''
+
+            containerElm.classList.add('enabled')
 
             originalImageProperties = {
                 width: croppedImage.width
@@ -60,11 +57,7 @@ var dom = require('dom-events')
           }
         , disable = function () {
             enabled = false
-            croppedImage.style.cursor = ''
-            overlayImage.style.opacity = '0'
-            overlayImage.style['z-index'] = '-1000'
-            navigationElm.style.opacity = '0'
-            navigationElm.style['z-index'] = '-1000'
+            containerElm.classList.remove('enabled')
           }
 
       draggable(overlayImage, function (event) {

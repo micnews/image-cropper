@@ -1,10 +1,9 @@
 var test = require('tape')
   , moveImage = require('../lib/move-image')
+  , createTestImage = require('./common').testImage
 
 test('not moving image', function (t) {
-  var image = new Image()
-  image.width = 100
-  image.height = 100
+  var image = createTestImage(100, 100)
 
   moveImage(image, 0, 0, 50, 50)
 
@@ -14,9 +13,7 @@ test('not moving image', function (t) {
 })
 
 test('moving it too much left', function (t) {
-  var image = new Image()
-  image.width = 100
-  image.height = 100
+  var image = createTestImage(100, 100)
 
   moveImage(image, -200, 0, 50, 50)
 
@@ -26,9 +23,7 @@ test('moving it too much left', function (t) {
 })
 
 test('moving it too much right', function (t) {
-  var image = new Image()
-  image.width = 100
-  image.height = 100
+  var image = createTestImage(100, 100)
   image.style.left = '-50px'
 
   moveImage(image, 200, 0, 50, 50)
@@ -39,9 +34,7 @@ test('moving it too much right', function (t) {
 })
 
 test('moving it too much up', function (t) {
-  var image = new Image()
-  image.width = 100
-  image.height = 100
+  var image = createTestImage(100, 100)
   moveImage(image, 0, -200, 50, 50)
 
   t.equal(image.style.left, '0px', 'should have correct image.style.left')
@@ -50,9 +43,7 @@ test('moving it too much up', function (t) {
 })
 
 test('moving it too much down', function (t) {
-  var image = new Image()
-  image.width = 100
-  image.height = 100
+  var image = createTestImage(100, 100)
   image.style.top = '-50px'
 
   moveImage(image, 0, 200, 50, 50)
@@ -63,9 +54,7 @@ test('moving it too much down', function (t) {
 })
 
 test('moving it within the container', function (t) {
-  var image = new Image()
-  image.width = 100
-  image.height = 100
+  var image = createTestImage(100, 100)
   image.style.top = '-30px'
   image.style.left = '-30px'
 
@@ -77,10 +66,7 @@ test('moving it within the container', function (t) {
 })
 
 test('moving it a float distance', function (t) {
-  var image = new Image()
-
-  image.width = 100
-  image.height = 100
+  var image = createTestImage(100, 100)
   image.style.left = '-0.5px'
   image.style.top = '-1.5px'
 

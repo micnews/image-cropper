@@ -1,15 +1,7 @@
 var test = require('tape')
 
   , resizeImage = require('../lib/resize-image')
-  , image = new Image
-
-test('load test image', function (t) {
-  image.onload = function () {
-    t.end()
-  }
-
-  image.src = 'http://placekitten.com/g/60/80'
-})
+  , image = require('./common').testImage(60, 80)
 
 test('not resizing image', function (t) {
   resizeImage(image, 1, 60, 80)

@@ -1,10 +1,13 @@
 var test = require('tape')
+
   , getCroppingData = require('../lib/get-cropping-data')
 
-test(function (t) {
+  , common = require('./common')
+
+test('simple', function (t) {
 
   var options = {
-          image: new Image(400, 300)
+          image: common.testImage(400, 300)
         , container: document.createElement('div')
       }
 

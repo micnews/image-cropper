@@ -1,16 +1,7 @@
 var test = require('tape')
 
   , resetZoom = require('../lib/reset-zoom')
-  , image = new Image
-
-test('load test image', function (t) {
-  image.onload = function () {
-    t.end()
-  }
-
-  // image 90px width, 100px height
-  image.src = 'http://placekitten.com/g/60/80'
-})
+  , image = require('./common').testImage(60, 80)
 
 test('image.{naturalWidth, naturalHeight} same size as area', function (t) {
 

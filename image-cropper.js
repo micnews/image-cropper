@@ -33,12 +33,13 @@ var dom = require('dom-events')
             navigationElm.style.opacity = '0'
             navigationElm.style['z-index'] = '-1000'
           }
+          // TODO: move this out of here (to navigation?)
         , results = {
               enable: function (callback) {
                 var saveElm = navigationElm.querySelector('.save')
                   , cancelElm = navigationElm.querySelector('.cancel')
                   , onsave = function () {
-                      if (callback) callback()
+                      if (callback) callback(null, { save: true })
                       disable()
 
                       dom.off(cancelElm, 'click', oncancel)
@@ -51,6 +52,7 @@ var dom = require('dom-events')
                         image.style.left = originalImageProperties.left
                       })
 
+                      if (callback) callback(null, { save: false })
                       disable()
 
                       dom.off(saveElm, 'click', onsave)
@@ -71,9 +73,9 @@ var dom = require('dom-events')
                 }
 
                 dom.once(navigationElm.querySelector('.save'), 'click', onsave)
-
                 dom.once(navigationElm.querySelector('.cancel'), 'click', oncancel)
               }
+
             , getCroppingData: function () {
                 return getCroppingData({ image: croppedImage, container: containerElm })
               }

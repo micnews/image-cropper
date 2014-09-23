@@ -1,9 +1,12 @@
 var test = require('tape')
 
   , resetZoom = require('../lib/reset-zoom')
-  , image = require('./common').createTestImage(60, 80)
+
+  , createTestImage = require('./common').createTestImage
 
 test('image.{naturalWidth, naturalHeight} same size as area', function (t) {
+  var image = createTestImage(60, 80)
+
   image.width = 200
   image.height = 200
 
@@ -17,6 +20,8 @@ test('image.{naturalWidth, naturalHeight} same size as area', function (t) {
 })
 
 test('image smaller than area', function (t) {
+  var image = createTestImage(60, 80)
+
   resetZoom(image, 120, 100)
 
   t.equal(image.style.left, '0px')
@@ -35,6 +40,8 @@ test('image smaller than area', function (t) {
 })
 
 test('image larger than area', function (t) {
+  var image = createTestImage(60, 80)
+
   // half the size the original image
   resetZoom(image, 30, 40)
 
@@ -56,6 +63,19 @@ test('image larger than area', function (t) {
   t.equal(image.style.top, '-5px')
   t.equal(image.width, 30)
   t.equal(image.height, 40)
+
+  t.end()
+})
+
+test('avoid rounding error', function (t) {
+  var image = createTestImage(140, 140)
+
+  resetZoom(image, 500, 268)
+
+  t.equal(image.style.left, '0px')
+  t.equal(image.style.top, '-116px')
+  t.equal(image.width, 500)
+  t.equal(image.height, 500)
 
   t.end()
 })

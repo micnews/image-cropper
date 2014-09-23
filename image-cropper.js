@@ -2,6 +2,7 @@ var dom = require('dom-events')
 
   , draggable = require('./lib/draggable')
   , ensureElement = require('./lib/ensure-element')
+  , getCroppingData = require('./lib/get-cropping-data')
   , loadImages = require('./lib/load-images')
   , moveImage = require('./lib/move-image')
   , navigation = require('./lib/navigation')
@@ -29,6 +30,9 @@ var dom = require('dom-events')
                 croppedImage.style.cursor = ''
                 overlayImage.style.opacity = '0'
                 overlayImage.style['z-index'] = '-1000'
+              }
+            , getCroppingData: function () {
+                return getCroppingData(croppedImage)
               }
           }
 

@@ -25,6 +25,39 @@ var dom = require('dom-events')
             , top: croppedImage.style.top
             , left: croppedImage.style.left
           }
+        , enable = function (options) {
+            var callback = options.callback || function () {}
+
+            enabled = true
+            croppedImage.style.cursor = 'move'
+            overlayImage.style.opacity = '0.5'
+            overlayImage.style['z-index'] = ''
+            navigationElm.style.opacity = '1'
+            navigationElm.style['z-index'] = ''
+
+            originalImageProperties = {
+                width: croppedImage.width
+              , height: croppedImage.height
+              , top: croppedImage.style.top
+              , left: croppedImage.style.left
+            }
+
+            options.navigation.enable(function (err, data) {
+              if (err) return callback(err)
+
+              if (data && !data.save) {
+                images.forEach(function (image) {
+                  image.width = originalImageProperties.width
+                  image.height = originalImageProperties.height
+                  image.style.top = originalImageProperties.top
+                  image.style.left = originalImageProperties.left
+                })
+              }
+
+              disable()
+              callback(null, data)
+            })
+          }
         , disable = function () {
             enabled = false
             croppedImage.style.cursor = ''
@@ -32,53 +65,6 @@ var dom = require('dom-events')
             overlayImage.style['z-index'] = '-1000'
             navigationElm.style.opacity = '0'
             navigationElm.style['z-index'] = '-1000'
-          }
-          // TODO: move this out of here (to navigation?)
-        , results = {
-              enable: function (callback) {
-                var saveElm = navigationElm.querySelector('.save')
-                  , cancelElm = navigationElm.querySelector('.cancel')
-                  , onsave = function () {
-                      if (callback) callback(null, { save: true })
-                      disable()
-
-                      dom.off(cancelElm, 'click', oncancel)
-                    }
-                  , oncancel = function () {
-                      images.forEach(function (image) {
-                        image.width = originalImageProperties.width
-                        image.height = originalImageProperties.height
-                        image.style.top = originalImageProperties.top
-                        image.style.left = originalImageProperties.left
-                      })
-
-                      if (callback) callback(null, { save: false })
-                      disable()
-
-                      dom.off(saveElm, 'click', onsave)
-                    }
-
-                enabled = true
-                croppedImage.style.cursor = 'move'
-                overlayImage.style.opacity = '0.5'
-                overlayImage.style['z-index'] = ''
-                navigationElm.style.opacity = '1'
-                navigationElm.style['z-index'] = ''
-
-                originalImageProperties = {
-                    width: croppedImage.width
-                  , height: croppedImage.height
-                  , top: croppedImage.style.top
-                  , left: croppedImage.style.left
-                }
-
-                dom.once(navigationElm.querySelector('.save'), 'click', onsave)
-                dom.once(navigationElm.querySelector('.cancel'), 'click', oncancel)
-              }
-
-            , getCroppingData: function () {
-                return getCroppingData({ image: croppedImage, container: containerElm })
-              }
           }
 
       draggable(overlayImage, function (event) {
@@ -108,14 +94,23 @@ var dom = require('dom-events')
 
         images.forEach(function (image) { resetZoom(image, width, height) })
 
-        navigation({
-            container: navigationElm
-          , scaleFactor: croppedImage.width / croppedImage.naturalWidth
-          , maxZoom: maxZoom
-          , images: images
-          , width: width
-          , height: height
-        })
+        var nav = navigation({
+                container: navigationElm
+              , scaleFactor: croppedImage.width / croppedImage.naturalWidth
+              , maxZoom: maxZoom
+              , images: images
+              , width: width
+              , height: height
+            })
+          , results = {
+              enable: function (callback) {
+                enable({ navigation: nav, callback: callback })
+              }
+
+            , getCroppingData: function () {
+                return getCroppingData({ image: croppedImage, container: containerElm })
+              }
+          }
 
         disable()
 

@@ -10,7 +10,7 @@ var dom = require('dom-events')
   , setupElements = require('./lib/setup-elements')
 
   , init = function (containerElm, options, callback) {
-      var navigationElm = ensureElement(containerElm, 'navigation')
+      var navigationElm = ensureElement({ container: containerElm, className: 'navigation' })
         , croppedImage = new Image()
         , overlayImage = new Image()
         , images = [ croppedImage, overlayImage ]

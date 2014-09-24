@@ -2,7 +2,7 @@ var dom = require('dom-events')
 
   , draggable = require('./lib/draggable')
   , ensureElement = require('./lib/ensure-element')
-  , getCroppingData = require('./lib/get-cropping-data')
+  , getCropData = require('./lib/get-crop-data')
   , loadImages = require('./lib/load-images')
   , moveImage = require('./lib/move-image')
   , navigation = require('./lib/navigation')
@@ -100,8 +100,8 @@ var dom = require('dom-events')
                 enable({ navigation: nav, callback: callback })
               }
 
-            , getCroppingData: function () {
-                return getCroppingData({ image: croppedImage, container: containerElm })
+            , getCropData: function () {
+                return getCropData({ image: croppedImage, container: containerElm })
               }
           }
 

@@ -10,7 +10,7 @@ dom.on(window, 'load', function() {
     dom.on(document.querySelector('#image .enable'), 'click', function () {
       cropper.enable(function (err, results) {
         console.log('finished cropping - cropper is now disabled')
-        console.log(JSON.stringify(cropper.getCroppingData()))
+        console.log(JSON.stringify(cropper.getCropData()))
         console.log('some results' + JSON.stringify(results))
       })
     })

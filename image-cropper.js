@@ -85,7 +85,10 @@ var dom = require('dom-events')
       loadImages(images, options.src, function (err) {
         if (err) return callback(err)
 
-        images.forEach(function (image) { resetZoom(image, width, height) })
+        images.forEach(function (image) {
+          resetZoom(image, width, height)
+          image.style.opacity = ''
+        })
 
         var nav = navigation({
                 container: navigationElm

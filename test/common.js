@@ -1,14 +1,18 @@
 var common = {
         createTestImage: function (width, height) {
+          var image = new Image()
+
+          image.src = common.createTestImageSrc(width, height)
+
+          return image
+        }
+      , createTestImageSrc: function (width, height) {
           var canvas = document.createElement('canvas')
-            , image = new Image()
 
           canvas.width = width
           canvas.height = height
 
-          image.src = canvas.toDataURL("image/jpeg")
-
-          return image
+          return canvas.toDataURL('image/jpeg')
         }
     }
 

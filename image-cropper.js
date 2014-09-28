@@ -18,37 +18,32 @@ var dom = require('dom-events')
         , height = options.height
         , maxZoom = options.maxZoom || 3
         , enabled = false
-          // need to save these for the cancel-button to work properly
-        , originalImageProperties = {
-              width: croppedImage.width
-            , height: croppedImage.height
-            , top: croppedImage.style.top
-            , left: croppedImage.style.left
-          }
         , enable = function (options) {
             var callback = options.callback || function () {}
+              , sliderHandle = containerElm.querySelector('.navigation .slider .handle')
+              , originalState = {
+                    imageWidth: croppedImage.width
+                  , imageHeight: croppedImage.height
+                  , imageTop: croppedImage.style.top
+                  , imageLeft: croppedImage.style.left
+                  , sliderHandleLeft: sliderHandle.style.left
+                }
 
             enabled = true
 
             containerElm.classList.add('enabled')
-
-            originalImageProperties = {
-                width: croppedImage.width
-              , height: croppedImage.height
-              , top: croppedImage.style.top
-              , left: croppedImage.style.left
-            }
 
             options.navigation.enable(function (err, data) {
               if (err) return callback(err)
 
               if (data && !data.save) {
                 images.forEach(function (image) {
-                  image.width = originalImageProperties.width
-                  image.height = originalImageProperties.height
-                  image.style.top = originalImageProperties.top
-                  image.style.left = originalImageProperties.left
+                  image.width = originalState.imageWidth
+                  image.height = originalState.imageHeight
+                  image.style.top = originalState.imageTop
+                  image.style.left = originalState.imageLeft
                 })
+                sliderHandle.style.left = originalState.sliderHandleLeft
               }
 
               disable()

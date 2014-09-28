@@ -22,13 +22,36 @@ test('cancel should reset zoom-slider position', function (t) {
       , handle = slider.querySelector('.handle')
       , line = slider.querySelector('.line')
       , cancelBtn = container.querySelector('.navigation .cancel')
+      , saveBtn = container.querySelector('.navigation .save')
 
     cropper.enable(function (err) {
       if (err) return t.end(err)
 
+      // assure the handle is restored to the original style.left value
       t.equal(handle.style.left, '0px')
 
-      t.end()
+      // enable the cropper, move handle and save
+      cropper.enable(function (err) {
+        if (err) return t.end(err)
+
+        var handleLeft = handle.style.left
+
+        // then enable the cropper, move handle and cancel
+        cropper.enable(function (err) {
+          if (err) return t.end(err)
+
+          // should restore to the previously saved value
+          t.equal(handle.style.left, handleLeft, 'should restore handleLeft correctly')
+          t.end()
+
+        })
+
+        dom.emit(line, 'click', { clientX: 0, clientY: 15, bubbles: true})
+        dom.emit(cancelBtn, 'click', { bubbles: true })
+      })
+
+      dom.emit(line, 'click', { clientX: 85, clientY: 15, bubbles: true })
+      dom.emit(saveBtn, 'click', { bubbles: true })
     })
 
     // this should zoom in

@@ -60,3 +60,34 @@ test('cancel should reset zoom-slider position', function (t) {
   })
 
 })
+
+test('can start zoomed in/moved with input from getCropData', function (t) {
+  var container = document.createElement('div')
+    , container2 = document.createElement('div')
+    , imageSrc = common.createTestImageSrc(200, 200)
+
+  document.body.appendChild(container)
+
+  imageCropper(container, { src: imageSrc, width: 100, height: 100 }, function (err, cropper) {
+
+    var line = container.querySelector('.navigation .slider .line')
+      , saveBtn = container.querySelector('.navigation .save')
+      , overlayImage = container.querySelector('.overlay')
+
+    cropper.enable(function () {
+      var cropData = cropper.getCropData()
+
+      imageCropper(container2, { src: imageSrc, width: 100, height: 100, cropData: cropData }, function (err, cropper2) {
+        t.deepEqual(cropper2.getCropData(), cropper.getCropData())
+        t.end()
+      })
+
+    })
+
+    // zoom in
+    dom.emit(line, 'click', { clientX: 80, clientY: 15, bubbles: true })
+
+    // save it
+    dom.emit(saveBtn, 'click', { bubbles: true })
+  })
+})

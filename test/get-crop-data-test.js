@@ -39,6 +39,6 @@ test('zoomed in', function (t) {
   options.image.style.left = '-100px'
   options.image.style.top = '-200px'
 
-  t.deepEqual(getCropData(options), { left: 50, top: 100, right: 150, bottom: 200, width: 200, height: 200 })
+  t.deepEqual(getCropData(options), { left: 50, top: 100, right: 150, bottom: 200, width: 400, height: 400 })
   t.end()
 })

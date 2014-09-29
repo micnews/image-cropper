@@ -80,10 +80,25 @@ var dom = require('dom-events')
       loadImages(images, options.src, function (err) {
         if (err) return callback(err)
 
-        images.forEach(function (image) {
-          resetZoom(image, width, height)
-          image.style.opacity = ''
-        })
+        // reset opacity, e.g. show the image
+        images.forEach(function (image) { image.style.opacity = '' })
+
+        // if we have cropData, use that. Otherwise start zoomed out and in center
+        // (as defined in resetZom)
+        if (options.cropData) {
+          // TODO: move this to a separate module
+          images.forEach(function (image) {
+            var zoomFactor = image.naturalWidth / options.cropData.width
+            image.style.top = - (options.cropData.top / zoomFactor) + 'px'
+            image.style.left = - (options.cropData.left / zoomFactor) + 'px'
+            image.width = options.cropData.width
+            image.height = options.cropData.height
+          })
+        } else {
+          images.forEach(function (image) {
+            resetZoom(image, width, height)
+          })
+        }
 
         var nav = navigation({
                 container: navigationElm

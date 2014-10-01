@@ -8,6 +8,7 @@ var dom = require('dom-events')
   , navigation = require('./lib/navigation')
   , resetZoom = require('./lib/reset-zoom')
   , setupElements = require('./lib/setup-elements')
+  , setupResultImage = require('./lib/result-image')
 
   , init = function (containerElm, options, callback) {
       var navigationElm = ensureElement({ container: containerElm, className: 'navigation' })
@@ -28,6 +29,7 @@ var dom = require('dom-events')
               )
             })
           })
+        , resultImage
         , enable = function (options) {
             var callback = options.callback || function () {}
               , sliderHandle = containerElm.querySelector('.navigation .slider .handle')
@@ -42,6 +44,10 @@ var dom = require('dom-events')
             containerElm.classList.add('enabled')
 
             draggable.enable()
+
+            if (resultImage) {
+              resultImage.style.opacity = '0'
+            }
 
             options.navigation.enable(function (err, data) {
               if (err) return callback(err)
@@ -61,9 +67,16 @@ var dom = require('dom-events')
             })
           }
         , disable = function () {
+            if (resultImage) {
+              resultImage.style.opacity = '1'
+            }
             draggable.disable()
             containerElm.classList.remove('enabled')
           }
+
+      if (options.resultSrc) {
+        resultImage = setupResultImage({ container: containerElm, src: options.resultSrc })
+      }
 
       setupElements({
           containerElm: containerElm
@@ -112,6 +125,9 @@ var dom = require('dom-events')
 
             , getCropData: function () {
                 return getCropData({ image: croppedImage, container: containerElm })
+              }
+            , setResultImage: function (options) {
+                resultImage = setupResultImage({ src: options.src, container: containerElm })
               }
           }
 

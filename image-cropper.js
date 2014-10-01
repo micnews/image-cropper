@@ -1,6 +1,6 @@
 var dom = require('dom-events')
 
-  , draggable = require('./lib/draggable')
+  , makeDraggable = require('./lib/draggable')
   , ensureElement = require('./lib/ensure-element')
   , getCropData = require('./lib/get-crop-data')
   , loadImages = require('./lib/load-images')
@@ -17,7 +17,17 @@ var dom = require('dom-events')
         , width = options.width
         , height = options.height
         , maxZoom = options.maxZoom || 3
-        , enabled = false
+        , draggable = makeDraggable(overlayImage, function (event) {
+            images.forEach(function (image) {
+              moveImage(
+                  image
+                , event.movementX
+                , event.movementY
+                , options.width
+                , options.height
+              )
+            })
+          })
         , enable = function (options) {
             var callback = options.callback || function () {}
               , sliderHandle = containerElm.querySelector('.navigation .slider .handle')
@@ -29,9 +39,9 @@ var dom = require('dom-events')
                   , sliderHandleLeft: sliderHandle.style.left
                 }
 
-            enabled = true
-
             containerElm.classList.add('enabled')
+
+            draggable.enable()
 
             options.navigation.enable(function (err, data) {
               if (err) return callback(err)
@@ -51,22 +61,9 @@ var dom = require('dom-events')
             })
           }
         , disable = function () {
-            enabled = false
+            draggable.disable()
             containerElm.classList.remove('enabled')
           }
-
-      draggable(overlayImage, function (event) {
-        images.forEach(function (image) {
-          if (enabled)
-            moveImage(
-                image
-              , event.movementX
-              , event.movementY
-              , options.width
-              , options.height
-            )
-        })
-      })
 
       setupElements({
           containerElm: containerElm

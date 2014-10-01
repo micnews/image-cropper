@@ -45,8 +45,9 @@ var dom = require('dom-events')
 
             draggable.enable()
 
+            // disable resultImage when cropper is enabled
             if (resultImage) {
-              resultImage.style.opacity = '0'
+              resultImage.disable()
             }
 
             options.navigation.enable(function (err, data) {
@@ -67,8 +68,9 @@ var dom = require('dom-events')
             })
           }
         , disable = function () {
+            // enable resultImage when cropper is disabled
             if (resultImage) {
-              resultImage.style.opacity = '1'
+              resultImage.enable()
             }
             draggable.disable()
             containerElm.classList.remove('enabled')
@@ -138,6 +140,7 @@ var dom = require('dom-events')
                   , width: width
                   , height: height
                 })
+                resultImage.enable()
               }
           }
 

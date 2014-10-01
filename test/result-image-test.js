@@ -1,21 +1,33 @@
 var test = require('tape')
-  , resultImage = require('../lib/result-image')
+  , setupResultImage = require('../lib/result-image')
   , common = require('./common')
 
-test('basic', function (t) {
+test('should start disabled and can then be enabled', function (t) {
   var container = document.createElement('div')
     , imageSrc = common.createTestImageSrc(100, 100)
-    , image = resultImage({ src: imageSrc, container: container })
+    , resultImage = setupResultImage({ src: imageSrc, container: container })
+    , image = resultImage.image
 
   t.equal(image.src, imageSrc, 'should have correct image src')
   t.equal(image.style.position, 'absolute')
   t.equal(image.style.top, '0px')
   t.equal(image.style.left, '0px')
-  t.equal(image.style.opacity, '1')
+  t.equal(image.style.opacity, '0')
+  t.equal(image.style['z-index'], '-1000')
   t.equal(image.width, 100)
   t.equal(image.height, 100)
   t.ok(image.classList.contains('result-image'), 'should have correct class')
   t.equal(container.querySelector('img.result-image'), image, 'image is added to container')
+
+  resultImage.enable()
+
+  t.equal(image.style.opacity, '1')
+  t.equal(image.style['z-index'], '1000')
+
+  resultImage.disable()
+
+  t.equal(image.style.opacity, '0')
+  t.equal(image.style['z-index'], '-1000')
 
   t.end()
 })
@@ -23,7 +35,7 @@ test('basic', function (t) {
 test('custom width & height', function (t) {
   var container = document.createElement('div')
     , imageSrc = common.createTestImageSrc(100, 100)
-    , image = resultImage({ src: imageSrc, width: 120, height: 120, container: container })
+    , image = setupResultImage({ src: imageSrc, width: 120, height: 120, container: container }).image
 
   t.equal(image.width, 120)
   t.equal(image.height, 120)
@@ -43,7 +55,7 @@ test('reuse existing image element', function (t) {
 
         return image
       })()
-    , actualImage = resultImage({ src: imageSrc, container: container })
+    , actualImage = setupResultImage({ src: imageSrc, container: container }).image
 
   t.equal(actualImage.nodeName, 'IMG', 'should return image')
   t.equal(actualImage, expectedImage, 'should reuse existing image')

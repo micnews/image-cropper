@@ -1,6 +1,6 @@
 var dom = require('dom-events')
 
-  , draggable = require('./lib/draggable')
+  , makeDraggable = require('./lib/draggable')
   , ensureElement = require('./lib/ensure-element')
   , getCropData = require('./lib/get-crop-data')
   , loadImages = require('./lib/load-images')
@@ -8,6 +8,7 @@ var dom = require('dom-events')
   , navigation = require('./lib/navigation')
   , resetZoom = require('./lib/reset-zoom')
   , setupElements = require('./lib/setup-elements')
+  , setupResultImage = require('./lib/result-image')
 
   , init = function (containerElm, options, callback) {
       var navigationElm = ensureElement({ container: containerElm, className: 'navigation' })
@@ -17,7 +18,18 @@ var dom = require('dom-events')
         , width = options.width
         , height = options.height
         , maxZoom = options.maxZoom || 3
-        , enabled = false
+        , draggable = makeDraggable(overlayImage, function (event) {
+            images.forEach(function (image) {
+              moveImage(
+                  image
+                , event.movementX
+                , event.movementY
+                , options.width
+                , options.height
+              )
+            })
+          })
+        , resultImage
         , enable = function (options) {
             var callback = options.callback || function () {}
               , sliderHandle = containerElm.querySelector('.navigation .slider .handle')
@@ -29,9 +41,14 @@ var dom = require('dom-events')
                   , sliderHandleLeft: sliderHandle.style.left
                 }
 
-            enabled = true
-
             containerElm.classList.add('enabled')
+
+            draggable.enable()
+
+            // disable resultImage when cropper is enabled
+            if (resultImage) {
+              resultImage.disable()
+            }
 
             options.navigation.enable(function (err, data) {
               if (err) return callback(err)
@@ -51,22 +68,22 @@ var dom = require('dom-events')
             })
           }
         , disable = function () {
-            enabled = false
+            // enable resultImage when cropper is disabled
+            if (resultImage) {
+              resultImage.enable()
+            }
+            draggable.disable()
             containerElm.classList.remove('enabled')
           }
 
-      draggable(overlayImage, function (event) {
-        images.forEach(function (image) {
-          if (enabled)
-            moveImage(
-                image
-              , event.movementX
-              , event.movementY
-              , options.width
-              , options.height
-            )
+      if (options.resultSrc) {
+        resultImage = setupResultImage({
+            container: containerElm
+          , src: options.resultSrc
+          , width: options.width
+          , height: options.height
         })
-      })
+      }
 
       setupElements({
           containerElm: containerElm
@@ -115,6 +132,15 @@ var dom = require('dom-events')
 
             , getCropData: function () {
                 return getCropData({ image: croppedImage, container: containerElm })
+              }
+            , setResultImage: function (options) {
+                resultImage = setupResultImage({
+                    src: options.src
+                  , container: containerElm
+                  , width: width
+                  , height: height
+                })
+                resultImage.enable()
               }
           }
 

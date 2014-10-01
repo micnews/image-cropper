@@ -91,3 +91,108 @@ test('can start zoomed in/moved with input from getCropData', function (t) {
     dom.emit(saveBtn, 'click', { bubbles: true })
   })
 })
+
+test('result image', function (t) {
+  var container = document.createElement('div')
+    , imageSrc = common.createTestImageSrc(200, 200)
+    , resultSrc = common.createTestImageSrc(100, 100)
+    , options = { src: imageSrc, width: 100, height: 100, resultSrc: resultSrc }
+
+  document.body.appendChild(container)
+
+  imageCropper(container, options, function (err, cropper) {
+
+    var resultImage = container.querySelector('img.result-image')
+    t.ok(resultImage, 'should have a result image')
+
+    if (!resultImage) return t.end()
+
+    t.equal(resultImage.style.opacity, '1', 'should be visible when cropper is disabled')
+
+    cropper.enable(function () {
+      t.equal(resultImage.style.opacity, '1', 'should be visible when cropper is disabled')
+      t.end()
+    })
+
+    t.equal(resultImage.style.opacity, '0', 'should be hidden when cropper is enabled')
+
+    dom.emit(container.querySelector('.navigation .save'), 'click')
+  })
+})
+
+test('cropper.setResultImage', function (t) {
+  var container = document.createElement('div')
+    , imageSrc = common.createTestImageSrc(200, 200)
+    , resultSrc = common.createTestImageSrc(100, 100)
+    , resultSrc2 = common.createTestImageSrc(100, 100, '#ff0000')
+    , options = { src: imageSrc, width: 100, height: 100, resultSrc: resultSrc }
+
+  document.body.appendChild(container)
+
+  imageCropper(container, options, function (err, cropper) {
+    cropper.enable(function () {
+      cropper.setResultImage({ src: resultSrc2 })
+      t.equal(container.querySelector('.result-image').src, resultSrc2)
+      t.end()
+    })
+
+    dom.emit(container.querySelector('.navigation .save'), 'click')
+  })
+})
+
+test('result image with not result image in options', function (t) {
+  var container = document.createElement('div')
+    , imageSrc = common.createTestImageSrc(200, 200)
+    , resultSrc = common.createTestImageSrc(100, 100)
+    , options = { src: imageSrc, width: 100, height: 100 }
+
+  document.body.appendChild(container)
+
+  imageCropper(container, options, function (err, cropper) {
+    cropper.setResultImage({ src: resultSrc })
+
+    var resultImage = container.querySelector('img.result-image')
+    t.ok(resultImage, 'should have a result image')
+
+    if (!resultImage) return t.end()
+
+    t.equal(resultImage.style.opacity, '1', 'should be visible when cropper is disabled')
+
+    cropper.enable(function () {
+      t.equal(resultImage.style.opacity, '1', 'should be visible when cropper is disabled')
+      t.end()
+    })
+
+    t.equal(resultImage.style.opacity, '0', 'should be hidden when cropper is enabled')
+
+    dom.emit(container.querySelector('.navigation .save'), 'click')
+  })
+})
+
+test('result image whose width/height is different than the viewport', function (t) {
+  var container = document.createElement('div')
+    , container2 = document.createElement('div')
+    , imageSrc = common.createTestImageSrc(200, 200)
+    , resultSrc = common.createTestImageSrc(120, 160)
+    , options = { src: imageSrc, width: 60, height: 80, resultSrc: resultSrc }
+    , options2 = { src: imageSrc, width: 60, height: 80}
+
+  document.body.appendChild(container)
+
+  imageCropper(container, options, function (err, cropper) {
+    var resultImage = container.querySelector('img.result-image')
+
+    t.equal(resultImage.width, 60)
+    t.equal(resultImage.height, 80)
+
+    imageCropper(container2, options2, function (err, cropper2) {
+      cropper2.setResultImage({ src: resultSrc })
+      var resultImage2 = container2.querySelector('img.result-image')      
+
+      t.equal(resultImage2.width, 60)
+      t.equal(resultImage2.height, 80)
+
+      t.end()
+    })
+  })
+})

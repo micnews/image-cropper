@@ -3,7 +3,7 @@ var EventEmitter = require('events').EventEmitter
   , dom = require('dom-events')
   , test = require('tape')
 
-  , slider = require('../lib/slider')
+  , createSlider = require('../lib/slider')
   , noop = function () {}
 
 test('initialize', function (t) {
@@ -13,7 +13,7 @@ test('initialize', function (t) {
 
   document.body.appendChild(elm)
 
-  slider(elm, { width: 200, handleSize: 20, lineHeight: 2 }, noop)
+  createSlider(elm, { width: 200, handleSize: 20, lineHeight: 2 }, noop)
 
   t.equal(elm.style.width, '200px')
   t.equal(elm.style.height, '20px')
@@ -46,12 +46,13 @@ test('initialize', function (t) {
 
 test('click exactly on line', function (t) {
   var elm = document.createElement('div')
+    , slider = createSlider(elm, { width: 150, lineHeight: 3, handleSize: 30 }, noop)
     , handle
     , line
 
   document.body.appendChild(elm)
 
-  slider(elm, { width: 150, lineHeight: 3, handleSize: 30 }, noop)
+  slider.enable()
 
   handle = elm.querySelector('.handle')
   line = elm.querySelector('.line')
@@ -67,11 +68,13 @@ test('click exactly on line', function (t) {
 
 test('click inside container', function (t) {
   var elm = document.createElement('div')
+    , slider = createSlider(elm, { width: 140, lineHeight: 4, handleSize: 10 }, noop)
     , handle
 
   document.body.appendChild(elm)
 
-  slider(elm, { width: 140, lineHeight: 4, handleSize: 10 }, noop)
+  slider.enable()
+
   handle = elm.querySelector('.handle')
 
   dom.emit(elm, 'click', { clientX: 100, clientY: 2, bubbles: true })
@@ -92,6 +95,7 @@ test('click inside container', function (t) {
 
 test('container placed out', function (t) {
   var elm = document.createElement('div')
+    , slider = createSlider(elm, { width: 150, lineHeight: 3, handleSize: 30 }, noop)
     , handle
     , line
 
@@ -99,7 +103,7 @@ test('container placed out', function (t) {
 
   document.body.appendChild(elm)
 
-  slider(elm, { width: 150, lineHeight: 3, handleSize: 30 }, noop)
+  slider.enable()
 
   handle = elm.querySelector('.handle')
   line = elm.querySelector('.line')
@@ -117,12 +121,13 @@ test('container placed out', function (t) {
 test('callback get correct factor', function (t) {
   var elm = document.createElement('div')
     , emitter = new EventEmitter()
+    , slider = createSlider(elm, { width: 120, lineHeight: 2, handleSize: 10 }, function (factor) {
+        emitter.emit('factor', factor)
+      })
 
   document.body.appendChild(elm)
 
-  slider(elm, { width: 120, lineHeight: 2, handleSize: 10 }, function (factor) {
-    emitter.emit('factor', factor)
-  })
+  slider.enable()
 
   emitter.once('factor', function (factor) {
     t.equal(factor, 0.5)
@@ -140,4 +145,35 @@ test('callback get correct factor', function (t) {
   })
 
   dom.emit(elm, 'click', { clientX: 60, bubbles: true })
+})
+
+test('start disabled', function (t) {
+  var elm = document.createElement('div')
+    , slider = createSlider(elm, { width: 150, lineHeight: 3, handleSize: 30 }, function () {
+        t.fail('callback should not be called')
+      })
+    , handle
+    , line
+
+  document.body.appendChild(elm)
+
+  dom.emit(elm, 'click', { clientX: 85, clientY: 15, bubbles: true })
+  process.nextTick(function () { t.end() })
+})
+
+test('disabled works as expected', function (t) {
+  var elm = document.createElement('div')
+    , slider = createSlider(elm, { width: 150, lineHeight: 3, handleSize: 30 }, function () {
+        t.fail('callback should not be called')
+      })
+    , handle
+    , line
+
+  document.body.appendChild(elm)
+
+  slider.enable()
+  slider.disable()
+
+  dom.emit(elm, 'click', { clientX: 85, clientY: 15, bubbles: true })
+  process.nextTick(function () { t.end() })
 })

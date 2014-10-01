@@ -75,7 +75,12 @@ var dom = require('dom-events')
           }
 
       if (options.resultSrc) {
-        resultImage = setupResultImage({ container: containerElm, src: options.resultSrc })
+        resultImage = setupResultImage({
+            container: containerElm
+          , src: options.resultSrc
+          , width: options.width
+          , height: options.height
+        })
       }
 
       setupElements({
@@ -127,7 +132,12 @@ var dom = require('dom-events')
                 return getCropData({ image: croppedImage, container: containerElm })
               }
             , setResultImage: function (options) {
-                resultImage = setupResultImage({ src: options.src, container: containerElm })
+                resultImage = setupResultImage({
+                    src: options.src
+                  , container: containerElm
+                  , width: width
+                  , height: height
+                })
               }
           }
 

@@ -168,3 +168,31 @@ test('result image with not result image in options', function (t) {
     dom.emit(container.querySelector('.navigation .save'), 'click')
   })
 })
+
+test('result image whose width/height is different than the viewport', function (t) {
+  var container = document.createElement('div')
+    , container2 = document.createElement('div')
+    , imageSrc = common.createTestImageSrc(200, 200)
+    , resultSrc = common.createTestImageSrc(120, 160)
+    , options = { src: imageSrc, width: 60, height: 80, resultSrc: resultSrc }
+    , options2 = { src: imageSrc, width: 60, height: 80}
+
+  document.body.appendChild(container)
+
+  imageCropper(container, options, function (err, cropper) {
+    var resultImage = container.querySelector('img.result-image')
+
+    t.equal(resultImage.width, 60)
+    t.equal(resultImage.height, 80)
+
+    imageCropper(container2, options2, function (err, cropper2) {
+      cropper2.setResultImage({ src: resultSrc })
+      var resultImage2 = container2.querySelector('img.result-image')      
+
+      t.equal(resultImage2.width, 60)
+      t.equal(resultImage2.height, 80)
+
+      t.end()
+    })
+  })
+})

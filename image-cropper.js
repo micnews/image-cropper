@@ -3,10 +3,9 @@ var dom = require('dom-events')
   , makeDraggable = require('./lib/draggable')
   , ensureElement = require('./lib/ensure-element')
   , getCropData = require('./lib/get-crop-data')
-  , loadImages = require('./lib/load-images')
   , moveImage = require('./lib/move-image')
   , navigation = require('./lib/navigation')
-  , resetZoom = require('./lib/reset-zoom')
+  , setImage = require('./lib/set-image')
   , setupElements = require('./lib/setup-elements')
   , setupResultImage = require('./lib/result-image')
 
@@ -94,28 +93,13 @@ var dom = require('dom-events')
         , height: height
       })
 
-      loadImages(images, options.src, function (err) {
+      var setImageOptions = { images: images, src: options.src, width: width, height: height }
+
+      setImage(setImageOptions, function (err) {
         if (err) return callback(err)
 
         // reset opacity, e.g. show the image
         images.forEach(function (image) { image.style.opacity = '' })
-
-        // if we have cropData, use that. Otherwise start zoomed out and in center
-        // (as defined in resetZom)
-        if (options.cropData) {
-          // TODO: move this to a separate module
-          images.forEach(function (image) {
-            var zoomFactor = image.naturalWidth / options.cropData.width
-            image.style.top = - (options.cropData.top / zoomFactor) + 'px'
-            image.style.left = - (options.cropData.left / zoomFactor) + 'px'
-            image.width = options.cropData.width
-            image.height = options.cropData.height
-          })
-        } else {
-          images.forEach(function (image) {
-            resetZoom(image, width, height)
-          })
-        }
 
         var nav = navigation({
                 container: navigationElm
@@ -133,6 +117,16 @@ var dom = require('dom-events')
             , getCropData: function () {
                 return getCropData({ image: croppedImage, container: containerElm })
               }
+            , setImage: function (options, callback) {
+              setImage({
+                      images: images
+                    , src: options.src
+                    , width: width
+                    , height: height
+                  }
+                , callback
+              )
+            }
             , setResultImage: function (options) {
                 resultImage = setupResultImage({
                     src: options.src

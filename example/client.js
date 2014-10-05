@@ -15,6 +15,10 @@ dom.on(window, 'load', function() {
       })
     })
 
+    dom.on(document.querySelector('#image .change'), 'click', function () {
+      cropper.setImage({ src: 'image2.jpg' }, function () {})
+    })
+
   })
 
 })

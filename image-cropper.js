@@ -93,7 +93,13 @@ var dom = require('dom-events')
         , height: height
       })
 
-      var setImageOptions = { images: images, src: options.src, width: width, height: height }
+      var setImageOptions = {
+          images: images
+        , src: options.src
+        , width: width
+        , height: height
+        , cropData: options.cropData
+      }
 
       setImage(setImageOptions, function (err) {
         if (err) return callback(err)

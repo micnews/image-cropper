@@ -123,7 +123,11 @@ var dom = require('dom-events')
             , getCropData: function () {
                 return getCropData({ image: croppedImage, container: containerElm })
               }
-            , setImage: function (options, callback) {
+            , changeImage: function (options, callback) {
+                var sliderHandle = containerElm.querySelector('.navigation .slider .handle')
+
+                sliderHandle.style.left = '0px'
+
                 setImage({
                         images: images
                       , src: options.src

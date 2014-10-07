@@ -196,3 +196,37 @@ test('result image whose width/height is different than the viewport', function 
     })
   })
 })
+
+test('imageCropper.setImage reset zoom slider-position', function (t) {
+  var container = document.createElement('div')
+    , imageSrc = common.createTestImageSrc(200, 200)
+    , imageSrc2 = common.createTestImageSrc(200, 200, '#ff0000')
+
+  document.body.appendChild(container)
+
+  imageCropper(container, { src: imageSrc, width: 100, height: 100 }, function (err, cropper) {
+    if (err) return t.end(err)
+
+    var slider = container.querySelector('.slider')
+      , handle = slider.querySelector('.handle')
+      , line = slider.querySelector('.line')
+      , saveBtn = container.querySelector('.navigation .save')
+
+    cropper.enable(function (err) {
+      if (err) return t.end(err)
+
+      // then enable the cropper, move handle and cancel
+      cropper.changeImage({ src: imageSrc2 }, function (err) {
+        if (err) return t.end(err)
+
+        // should restore to the previously saved value
+        t.equal(handle.style.left, '0px', 'should restore handleLeft correctly')
+        t.end()
+      })
+    })
+
+    // this should zoom in
+    dom.emit(line, 'click', { clientX: 85, clientY: 15, bubbles: true })
+    dom.emit(saveBtn, 'click', { bubbles: true })
+  })
+})

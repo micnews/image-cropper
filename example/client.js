@@ -26,7 +26,7 @@ dom.on(window, 'load', function() {
 dom.on(window, 'load', function() {
   var containerElm = document.querySelector('#image2 .image-cropper-container')
 
-  imageCropper(containerElm, { width: 500, height: 268, src: 'image.jpg', resultSrc: 'image2.jpg' }, function (err, cropper) {
+  imageCropper(containerElm, { width: 500, height: 268, src: 'image.jpg', resultSrc: 'image2.jpg', overlay: true }, function (err, cropper) {
 
     dom.on(document.querySelector('#image2 .enable'), 'click', function () {
       cropper.enable(function (err, results) {

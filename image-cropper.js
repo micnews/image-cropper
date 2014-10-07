@@ -12,12 +12,12 @@ var dom = require('dom-events')
   , init = function (containerElm, options, callback) {
       var navigationElm = ensureElement({ container: containerElm, className: 'navigation' })
         , croppedImage = new Image()
-        , overlayImage = new Image()
-        , images = [ croppedImage, overlayImage ]
+        , overlayImage = options.overlay ? new Image() : undefined
+        , images = options.overlay ? [ croppedImage, overlayImage ] : [ croppedImage ]
         , width = options.width
         , height = options.height
         , maxZoom = options.maxZoom || 3
-        , draggable = makeDraggable(overlayImage, function (event) {
+        , draggable = makeDraggable((overlayImage || croppedImage), function (event) {
             images.forEach(function (image) {
               moveImage(
                   image

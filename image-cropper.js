@@ -118,15 +118,15 @@ var dom = require('dom-events')
                 return getCropData({ image: croppedImage, container: containerElm })
               }
             , setImage: function (options, callback) {
-              setImage({
-                      images: images
-                    , src: options.src
-                    , width: width
-                    , height: height
-                  }
-                , callback
-              )
-            }
+                setImage({
+                        images: images
+                      , src: options.src
+                      , width: width
+                      , height: height
+                    }
+                  , callback
+                )
+              }
             , setResultImage: function (options) {
                 resultImage = setupResultImage({
                     src: options.src

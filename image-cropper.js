@@ -114,6 +114,7 @@ var dom = require('dom-events')
               , images: images
               , width: width
               , height: height
+              , sliderWidth: options.sliderWidth
             })
           , results = {
               enable: function (callback) {

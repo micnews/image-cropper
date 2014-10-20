@@ -109,7 +109,6 @@ var dom = require('dom-events')
 
         var nav = navigation({
                 container: navigationElm
-              , scaleFactor: croppedImage.width / croppedImage.naturalWidth
               , maxZoom: maxZoom
               , images: images
               , width: width

@@ -16,7 +16,6 @@ imageCropper(container, { width: 500, height: 268, src: 'image.jpg' }, function 
 
   // enabling the image-cropper opens up the actually cropping view,
   // and then the callback is ran when the user has exited that view
-  // 
   cropper.enable(function (err, results) {
     // results.save === true -> user pressed the save-button
     // results.save === false -> user pressed the cancel-button
@@ -27,6 +26,8 @@ imageCropper(container, { width: 500, height: 268, src: 'image.jpg' }, function 
   cropper.changeImage({ src: 'image2.jpg' }, function () {})
 })
 ```
+
+For more information on how to use the image-cropper, see the [example](https://github.com/micnews/image-cropper/tree/master/example).
 
 ## Installation
 

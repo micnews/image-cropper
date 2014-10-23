@@ -230,3 +230,24 @@ test('imageCropper.setImage reset zoom slider-position', function (t) {
     dom.emit(saveBtn, 'click', { bubbles: true })
   })
 })
+
+
+test('imageCropper.changeImage', function (t) {
+  var container = document.createElement('div')
+    , imageSrc = common.createTestImageSrc(200, 200)
+    , imageSrc2 = common.createTestImageSrc(200, 200, '#ff0000')
+
+  document.body.appendChild(container)
+
+  imageCropper(container, { src: imageSrc, width: 100, height: 100 }, function (err, cropper) {
+    if (err) return t.end(err)
+
+      cropper.changeImage({ src: imageSrc2 }, function (err) {
+        if (err) return t.end(err)
+
+        // Should have loaded the new image
+        t.equal(container.querySelector('img').src, imageSrc2)
+        t.end()
+      })
+  })
+})

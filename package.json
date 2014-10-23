@@ -17,5 +17,6 @@
     "after": "^0.8.1",
     "dom-events": "^0.1.1",
     "image-loaded": "0.0.2"
-  }
+  },
+  "repository": "micnews/image-cropper"
 }

@@ -1,6 +1,6 @@
 {
   "name": "image-cropper",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Vanilla js-widget for the browser dealing with cropping images",
   "main": "image-cropper.js",
   "scripts": {

@@ -230,3 +230,67 @@ test('imageCropper.setImage reset zoom slider-position', function (t) {
     dom.emit(saveBtn, 'click', { bubbles: true })
   })
 })
+
+
+test('imageCropper.changeImage', function (t) {
+  var container = document.createElement('div')
+    , imageSrc = common.createTestImageSrc(200, 200)
+    , imageSrc2 = common.createTestImageSrc(200, 200, '#ff0000')
+
+  document.body.appendChild(container)
+
+  imageCropper(container, { src: imageSrc, width: 100, height: 100 }, function (err, cropper) {
+    if (err) return t.end(err)
+
+      cropper.changeImage({ src: imageSrc2 }, function (err) {
+        if (err) return t.end(err)
+
+        // Should have loaded the new image
+        t.equal(container.querySelector('img').src, imageSrc2)
+        t.end()
+      })
+  })
+})
+
+test('imageCropper.changeImage and resize', function (t) {
+  var container = document.createElement('div')
+    , imageSrc = common.createTestImageSrc(200, 200)
+    , imageSrc2 = common.createTestImageSrc(400, 400, '#ffaa33')
+
+  document.body.appendChild(container)
+
+  imageCropper(container, { src: imageSrc, width: 100, height: 100 }, function (err, cropper) {
+    if (err) return t.end(err)
+
+    var slider = container.querySelector('.slider')
+      , handle = slider.querySelector('.handle')
+      , line = slider.querySelector('.line')
+      , saveBtn = container.querySelector('.navigation .save')
+      , image = container.querySelector('img')
+      , zoomIn = function () {
+          dom.emit(line, 'click', { clientX: 180, clientY: 15, bubbles: true })
+          dom.emit(saveBtn, 'click', { bubbles: true })
+        }
+
+    cropper.enable(function (err, data) {
+      if (err) return t.end(err)
+
+      var imageWidthAfterResize = image.width;
+
+      cropper.changeImage({ src: imageSrc2 }, function (err) {
+        if (err) return t.end(err)
+
+        cropper.enable(function (err, data) {
+          t.equal(imageWidthAfterResize, image.width)
+          t.end()
+        })
+
+        zoomIn()
+      })
+
+    })
+
+    zoomIn()
+  })
+})
+

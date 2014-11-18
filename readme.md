@@ -6,6 +6,10 @@ Vanilla js-widget for the browser dealing with cropping images
 
 [![NPM](https://nodei.co/npm-dl/image-cropper.png)](https://nodei.co/npm/image-cropper/)
 
+[![Build Status](https://travis-ci.org/micnews/image-cropper.svg)](https://travis-ci.org/micnews/image-cropper)
+
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/mic-image-cropper.svg?auth=0bbb218cf8daf91e7d8c84ddb23a2fda)](https://saucelabs.com/users/mic-image-cropper/tests)
+
 ## Usage
 ```js
 var container = document.querySelector('#image-cropper-wrapper')
